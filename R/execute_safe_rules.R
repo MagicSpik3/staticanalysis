@@ -21,7 +21,8 @@ execute_safe_rules <- function(file_path, allowed_vars = c("r")) {
   invalid_vars <- setdiff(rules$Target, allowed_vars)
 
   if (length(invalid_vars) > 0) {
-    stop(sprintf("❌ VALIDATION ERROR: Variable '%s' is not allowed. Did you mean '%s'?",
+    stop(sprintf("❌ VALIDATION ERROR: Variable '%s' is not allowed. D
+                 id you mean '%s'?",
                  invalid_vars[1], allowed_vars[1]))
   }
 

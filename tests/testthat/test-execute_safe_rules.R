@@ -49,9 +49,9 @@ test_that("execute_safe_rules processes real artifacts from filesystem", {
   output <- execute_safe_rules(real_file, allowed_vars = c("r", "tax", "net"))
 
   # 3. Verify the "Real" Logic
-  # r = 5200
-  # tax = 1040
-  # net = 4160
+  # r: 5200
+  # tax: 1040
+  # net: 4160
   expect_equal(output$r, 5200)
   expect_equal(output$tax, 1040)
   expect_equal(output$net, 4160)
