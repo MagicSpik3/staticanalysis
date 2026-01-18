@@ -1,26 +1,35 @@
 # runner
 # This loads all your functions into memory immediately
+usethis::use_package("fs")      # For file system handling
+usethis::use_package("dplyr")   # For counting frequencies
+usethis::use_package("purrr")   # For iteration
+usethis::use_package("diffobj")
+usethis::proj_sitrep()
+
+library(staticanalysis)
+
 devtools::install()
 devtools::load_all()
+devtools::document()
 lintr::lint_package()
-usethis::use_package("diffobj")
+styler::style_pkg()
 here::dr_here()
-devtools::check()
-usethis::proj_sitrep()
+#devtools::check()
 ls("package:staticanalysis")
 list.files("tests/testthat", recursive = TRUE)
+
+
+
 
 # show the tre
 fs::dir_tree(".", recurse = TRUE)
 
-devtools::load_all()
-sapply(ls("package:staticanalysis"), get)
+#devtools::load_all()
+#sapply(ls("package:staticanalysis"), get)
 
 
-library(staticanalysis)
-g <- visualize_rules("tests/testthat/artifacts/accountant_rules.csv")
-print(g)
-
+#g <- visualize_rules("tests/testthat/artifacts/accountant_rules.csv")
+#print(g)
 
 
 package_overview <- function() {
@@ -42,6 +51,5 @@ package_overview <- function() {
 
 package_overview()
 
-
-devtools::load_all() # Load new functions
+#devtools::load_all() # Load new functions
 devtools::test()     # Run new tests

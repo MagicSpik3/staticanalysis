@@ -1,6 +1,5 @@
 # test-pipeline.R
 test_that("End-to-End Pipeline: Compile -> Run", {
-
   # 1. Locate the artifact (Now correctly inside testthat/artifacts)
   real_file <- test_path("artifacts", "accountant_rules.csv")
   expect_true(file.exists(real_file))
@@ -25,7 +24,7 @@ test_that("End-to-End Pipeline: Compile -> Run", {
 test_that("Compiler catches security threats", {
   # Mock a bad file
   bad_file <- tempfile(fileext = ".csv")
-  write.csv(data.frame(Target="r", Rule="system('ls')"), bad_file)
+  write.csv(data.frame(Target = "r", Rule = "system('ls')"), bad_file)
 
   # Compiler should throw error BEFORE we even try to run it
   expect_error(compile_rules(bad_file), "SECURITY ALERT")

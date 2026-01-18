@@ -1,54 +1,36 @@
-#' Visualize Rules
+#' Visualize Rules from Recipe
 #'
-#' Reads a configuration file and generates a visual flowchart of the logic.
+#' Generates a flowchart from a compiled Recipe object.
 #'
 #' @author Mark London
-#'
-#' @param file_path String. Path to the CSV/Excel file.
+#' @param recipe A 'rule_recipe' object created by compile_rules().
 #' @return A DiagrammeR graph object.
 #' @export
-visualize_rules <- function(file_path) {
+visualize_rules <- function(recipe) {
+  if (!inherits(recipe, "rule_recipe")) stop("Input must be a compiled recipe.")
 
-  if (!file.exists(file_path)) stop("File not found: ", file_path)
-  rules <- utils::read.csv(file_path, stringsAsFactors = FALSE)
+  # 1. Extract Nodes (Targets) from the Recipe Steps
+  nodes <- vapply(recipe, function(x) x$target, character(1))
 
-  # 1. Build the Node List (Every variable is a node)
-  nodes <- unique(rules$Target)
-
-  # 2. Build the Edge List (Who depends on whom?)
+  # 2. Build Edges (Dependencies)
   edges <- data.frame(from = character(), to = character(), stringsAsFactors = FALSE)
 
-  for (i in seq_len(nrow(rules))) {
-    target <- rules$Target[i]
-    logic  <- rules$Rule[i]
+  for (step in recipe) {
+    # We inspect the AST (step$expression) directly from the recipe
+    vars_in_logic <- all.names(step$expression)
 
-    # Parse the logic to find input variables
-    # We cheat slightly by parsing and looking for symbols
-    # "r * 0.2" -> symbols: "r"
+    # Find which variables in the logic are actually other Nodes
+    inputs <- intersect(vars_in_logic, nodes)
 
-    # Extract all symbols from the expression
-    # (Safe scan, no eval)
-    parsed <- tryCatch(parse(text = logic), error = function(e) NULL)
-
-    if (!is.null(parsed)) {
-      # Recursively find symbols in the AST
-      vars_in_logic <- all.names(parsed)
-
-      # Filter to keep only things that appear in our 'Target' list
-      # (Ignore numbers like '0.2' and functions like '*')
-      inputs <- intersect(vars_in_logic, nodes)
-
-      if (length(inputs) > 0) {
-        new_edges <- data.frame(from = inputs, to = target, stringsAsFactors = FALSE)
-        edges <- rbind(edges, new_edges)
-      }
+    if (length(inputs) > 0) {
+      new_edges <- data.frame(from = inputs, to = step$target, stringsAsFactors = FALSE)
+      edges <- rbind(edges, new_edges)
     }
   }
 
   # 3. Render Graph
-  # Using DiagrammeR's simple string spec
   if (nrow(edges) == 0) {
-    graph_spec <- paste(nodes, collapse = "; ")
+    graph_spec <- paste(unique(nodes), collapse = "; ")
   } else {
     graph_spec <- paste(paste(edges$from, "->", edges$to), collapse = " ")
   }

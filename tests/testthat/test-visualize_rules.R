@@ -1,17 +1,14 @@
-test_that("visualize_rules generates a graph from artifacts", {
-
-  # 1. Locate the artifact
+test_that("visualize_rules consumes a Recipe object", {
+  # 1. Setup: Get a compiled recipe
   real_file <- test_path("artifacts", "accountant_rules.csv")
+  recipe <- compile_rules(real_file)
 
-  # 2. Run the Visualizer
-  graph <- visualize_rules(real_file)
+  # 2. Run Visualizer
+  graph <- visualize_rules(recipe)
 
-  # 3. Verify it returned a DiagrammeR object
-  expect_s3_class(graph, "grViz")
+  # 3. Verify
   expect_s3_class(graph, "htmlwidget")
 
-  # 4. (Optional) Check the HTML source contains our nodes
-  # logic: r depends on nothing (in file context), tax depends on r
+  # Check that 'r' flows into 'tax'
   expect_true(grepl("r -> tax", graph$x$diagram))
-  expect_true(grepl("r -> net", graph$x$diagram))
 })

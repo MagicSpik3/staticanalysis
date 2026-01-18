@@ -4,15 +4,13 @@
 \alias{compile_rules}
 \title{Compile Rules}
 \usage{
-compile_rules(file_path, allowed_vars = c("r", "tax", "net"))
+compile_rules(file_path, allowed_vars = NULL)
 }
 \arguments{
 \item{file_path}{String. Path to the CSV/Excel file.}
 
-\item{allowed_vars}{Character Vector. The whitelist of allowed outputs.}
-}
-\value{
-A 'recipe' data frame containing parsed expressions and dependencies.
+\item{allowed_vars}{Character Vector. The whitelist of allowed outputs.
+If NULL (default), strict checking is disabled (Discovery Mode).}
 }
 \description{
 Parses a configuration file into a 'Recipe' state machine.

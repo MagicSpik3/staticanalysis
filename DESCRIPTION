@@ -15,4 +15,7 @@ Config/testthat/edition: 3
 Imports: 
     DiagrammeR,
     diffobj,
+    dplyr,
+    fs,
+    purrr,
     utils

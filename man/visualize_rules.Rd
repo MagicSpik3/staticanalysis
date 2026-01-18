@@ -2,18 +2,18 @@
 % Please edit documentation in R/visualize_rules.R
 \name{visualize_rules}
 \alias{visualize_rules}
-\title{Visualize Rules}
+\title{Visualize Rules from Recipe}
 \usage{
-visualize_rules(file_path)
+visualize_rules(recipe)
 }
 \arguments{
-\item{file_path}{String. Path to the CSV/Excel file.}
+\item{recipe}{A 'rule_recipe' object created by compile_rules().}
 }
 \value{
 A DiagrammeR graph object.
 }
 \description{
-Reads a configuration file and generates a visual flowchart of the logic.
+Generates a flowchart from a compiled Recipe object.
 }
 \author{
 Mark London

@@ -1,0 +1,12 @@
+Target,Rule
+base_salary,50000
+years_service,5
+bonus_rate,ifelse(years_service > 3, 0.15, 0.05)
+bonus,base_salary * bonus_rate
+total_gross,base_salary + bonus
+is_high_earner,total_gross > 45000
+tax_rate,ifelse(is_high_earner, 0.4, 0.2)
+tax_paid,total_gross * tax_rate
+net_pay,total_gross - tax_paid
+audit_token,paste("EMP", years_service, round(net_pay), sep="_")
+stat_check,stats::median(c(base_salary, total_gross, net_pay))
