@@ -34,3 +34,25 @@ test_that("execute_safe_rules processing logic", {
     "SECURITY ALERT"
   )
 })
+
+test_that("execute_safe_rules processes real artifacts from filesystem", {
+
+  # 1. Locate the artifact (Robust Pathing)
+  # This looks inside tests/testthat/artifacts/
+  real_file <- test_path("artifacts", "accountant_rules.csv")
+
+  # Ensure it exists before running (Good practice for integration tests)
+  expect_true(file.exists(real_file), info = "Artifact file missing!")
+
+  # 2. Run the Engine
+  # We allow 'r', 'tax', and 'net' for this specific scenario
+  output <- execute_safe_rules(real_file, allowed_vars = c("r", "tax", "net"))
+
+  # 3. Verify the "Real" Logic
+  # r = 5200
+  # tax = 1040
+  # net = 4160
+  expect_equal(output$r, 5200)
+  expect_equal(output$tax, 1040)
+  expect_equal(output$net, 4160)
+})

@@ -1,0 +1,4 @@
+Target,Rule
+r,100 * 52
+tax,r * 0.2
+net,r - tax
