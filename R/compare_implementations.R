@@ -1,53 +1,80 @@
-#' Compare Legacy Script vs Refactored Directory
+#' Compare Implementations
 #'
-#' Uses AST parsing (not regex) to verify that functions extracted
-#' to individual files match the original monolithic script.
+#' Verifies that functions defined in a single legacy file (Monolith) are identical
+#' in logic to those split into a directory of files (Refactored).
+#' Uses AST comparison to ignore comments and whitespace differences.
 #'
-#' @param monolith_path Path to the big legacy .R file
-#' @param refactored_dir Path to the directory of new single files
+#' @param monolith_path String. Path to the legacy monolithic R script.
+#' @param refactored_dir String. Path to the directory containing refactored R files.
+#' @return A list of comparison results for each function found.
 #' @export
 compare_implementations <- function(monolith_path, refactored_dir) {
-  # nolint start: commented_code_linter
-  # # 1. Parse the Monolith (The Source of Truth)
-  # # We use our robust XML parser here, not regex
-  # mono_ast <- xmlparsedata::xml_parse_data(parse(file = monolith_path, keep.source = TRUE))
-  #
-  # # Filter for function definitions
-  # # (Simplified for brevity, assumes we integrate the logic from inventory.R)
-  # # In reality, you'd reuse inventory_functions() here if it supported single files.
-  #
-  # # 2. Iterate through Refactored Files
-  # new_files <- fs::dir_ls(refactored_dir, glob = "*.R")
-  #
-  # results <- list()
-  #
-  # for (f in new_files) {
-  #   func_name <- fs::path_ext_remove(fs::path_file(f))
-  #
-  #   # Read the NEW code
-  #   new_code <- readLines(f)
-  #
-  #   # Extract the OLD code from the Monolith
-  #   # (We need to implement 'get_function_body' using AST logic)
-  #   old_code <- get_function_body_ast(monolith_path, func_name)
-  #
-  #   if (is.null(old_code)) {
-  #     message(sprintf("⚠️ Function '%s' not found in monolith.", func_name))
-  #     next
-  #   }
-  #
-  #   # 3. The Visual Diff (Your old code was great here!)
-  #   diff <- diffobj::diffPrint(
-  #     target = old_code,
-  #     current = new_code,
-  #     format = "ansi8",
-  #     mode = "sidebyside"
-  #   )
-  #
-  #   results[[func_name]] <- diff
-  #   print(diff)
-  # }
-  #
-  # return(invisible(results))
-  # nolint end
+  if (!file.exists(monolith_path)) stop("Monolith file not found.")
+  if (!fs::dir_exists(refactored_dir)) stop("Refactored directory not found.")
+
+  # 1. Extract functions from the Monolith
+  # We parse the code but do NOT evaluate it (Safety First)
+  mono_funcs <- extract_functions_from_file(monolith_path)
+
+  # 2. Extract functions from the Refactored Directory
+  ref_files <- fs::dir_ls(refactored_dir, glob = "*.R")
+  ref_funcs <- list()
+  for (f in ref_files) {
+    ref_funcs <- c(ref_funcs, extract_functions_from_file(f))
+  }
+
+  # 3. Compare Intersection
+  common_names <- intersect(names(mono_funcs), names(ref_funcs))
+  results <- list()
+
+  for (fn_name in common_names) {
+    f_old <- mono_funcs[[fn_name]]
+    f_new <- ref_funcs[[fn_name]]
+
+    # We compare the DEPARSED structure.
+    # This standardizes formatting, ensuring logic is identical.
+    # We use all.equal on the language objects.
+    is_match <- isTRUE(all.equal(f_old, f_new))
+
+    diff_output <- NULL
+    if (!is_match) {
+      # Use diffobj to generate a visual diff of the logic
+      diff_output <- diffobj::diffPrint(f_old, f_new)
+    }
+
+    results[[fn_name]] <- list(
+      match = is_match,
+      diff  = diff_output
+    )
+  }
+
+  return(results)
+}
+
+#' Helper: Extract Function ASTs from a file
+#' @noRd
+extract_functions_from_file <- function(fpath) {
+  # Parse safely; returns a list of expressions
+  exprs <- tryCatch(
+    parse(fpath, keep.source = FALSE),
+    error = function(e) NULL
+  )
+
+  funcs <- list()
+
+  for (e in exprs) {
+    # Look for assignment: name <- function(...) or name = function(...)
+    if (is.call(e) && as.character(e[[1]]) %in% c("<-", "=")) {
+      lhs <- e[[2]] # The name
+      rhs <- e[[3]] # The value
+
+      # Check if the value is a function definition
+      if (is.call(rhs) && as.character(rhs[[1]]) == "function") {
+        # Convert lhs symbol to string
+        fn_name <- as.character(lhs)
+        funcs[[fn_name]] <- rhs
+      }
+    }
+  }
+  return(funcs)
 }

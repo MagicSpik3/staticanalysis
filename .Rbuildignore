@@ -1,2 +1,5 @@
 ^staticanalysis\.Rproj$
 ^\.Rproj\.user$
+^\.lintr$
+^runner\.R$
+^tests/testthat/artifacts$

@@ -2,16 +2,20 @@
 % Please edit documentation in R/compare_implementations.R
 \name{compare_implementations}
 \alias{compare_implementations}
-\title{Compare Legacy Script vs Refactored Directory}
+\title{Compare Implementations}
 \usage{
 compare_implementations(monolith_path, refactored_dir)
 }
 \arguments{
-\item{monolith_path}{Path to the big legacy .R file}
+\item{monolith_path}{String. Path to the legacy monolithic R script.}
 
-\item{refactored_dir}{Path to the directory of new single files}
+\item{refactored_dir}{String. Path to the directory containing refactored R files.}
+}
+\value{
+A list of comparison results for each function found.
 }
 \description{
-Uses AST parsing (not regex) to verify that functions extracted
-to individual files match the original monolithic script.
+Verifies that functions defined in a single legacy file (Monolith) are identical
+in logic to those split into a directory of files (Refactored).
+Uses AST comparison to ignore comments and whitespace differences.
 }

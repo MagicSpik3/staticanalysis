@@ -10,7 +10,13 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests:
-    testthat (>= 3.0.0)
+    devtools,
+    here,
+    lintr,
+    styler,
+    testthat (>= 3.0.0),
+    usethis,
+    xmlparsedata
 Config/testthat/edition: 3
 Imports: 
     DiagrammeR,
@@ -18,4 +24,5 @@ Imports:
     dplyr,
     fs,
     purrr,
+    rlang,
     utils
