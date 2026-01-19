@@ -93,3 +93,87 @@ package_overview()
 
 #devtools::load_all() # Load new functions
 devtools::test()     # Run new tests
+
+
+
+# ==============================================================================
+# STATIC ANALYSIS RUNNER
+# ==============================================================================
+# Usage:
+#   Rscript runner.R                   (Runs on current directory)
+#   Rscript runner.R /path/to/repo     (Runs on specific repo)
+# ==============================================================================
+
+args <- commandArgs(trailingOnly = TRUE)
+target_dir <- if (length(args) > 0) args[1] else getwd()
+
+message(sprintf("🚀 Starting Analysis on: %s", target_dir))
+
+# Check if the package is installed; if not, try to load local source
+if (!requireNamespace("staticanalysis", quietly = TRUE)) {
+  message("⚠️ Package 'staticanalysis' not installed globally. Loading from source...")
+  # Assumes runner.R is inside the staticanalysis repo
+  devtools::load_all(".")
+} else {
+  library(staticanalysis)
+}
+
+# ------------------------------------------------------------------------------
+# 1. Project Inventory & Test Coverage
+# ------------------------------------------------------------------------------
+message("\n📊 GENERATING INVENTORY...")
+tryCatch({
+  inventory <- staticanalysis::audit_inventory(target_dir)
+
+  if (!is.null(inventory)) {
+    print(inventory)
+
+    # Calculate coverage metric
+    funcs_only <- inventory[inventory$type == "function", ]
+    coverage <- mean(funcs_only$called_in_test) * 100
+    message(sprintf("\nTest Coverage (Reference Check): %.1f%% of functions mentioned in tests.", coverage))
+  } else {
+    message("No functions or variables found.")
+  }
+}, error = function(e) message("Skipped Inventory: ", e$message))
+
+# ------------------------------------------------------------------------------
+# 2. Dependency Scan
+# ------------------------------------------------------------------------------
+message("\n📦 SCANNING DEPENDENCIES...")
+tryCatch({
+  deps <- staticanalysis::scan_dependencies(target_dir)
+
+  if (length(deps$undeclared_ghosts) > 0) {
+    message("❌ GHOST DEPENDENCIES FOUND (Used but not in DESCRIPTION):")
+    print(deps$undeclared_ghosts)
+  } else {
+    message("✅ No ghost dependencies found.")
+  }
+
+  if (length(deps$usage_stats) > 0) {
+    message("\nTop Used Packages:")
+    print(head(deps$usage_stats, 5))
+  }
+}, error = function(e) message("Skipped Dependencies: ", e$message))
+
+# ------------------------------------------------------------------------------
+# 3. Rule Compilation (If CSVs exist)
+# ------------------------------------------------------------------------------
+csv_files <- list.files(target_dir, pattern = "\\.csv$", recursive = TRUE, full.names = TRUE)
+if (length(csv_files) > 0) {
+  message(sprintf("\n📜 Found %d rule files (CSVs). Attempting compile...", length(csv_files)))
+  # Just trying the first one as a smoke test
+  tryCatch({
+    recipe <- staticanalysis::compile_rules(csv_files[1], allowed_vars = NULL)
+    message("✅ Successfully compiled first rule file.")
+  }, error = function(e) message("⚠️ Could not compile rules: ", e$message))
+}
+
+message("\n✅ Analysis Complete.")
+
+
+# # In your terminal at work:
+#Rscript runner.R /home/work/repos/BigProject/SubPackageA
+#Rscript runner.R /home/work/repos/BigProject/SubPackageB
+
