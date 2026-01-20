@@ -44,9 +44,20 @@ audit_inventory <- function(dir_path) {
       decreasing = c(TRUE, FALSE, FALSE),
       method = "radix"
     )
-
     final_df <- final_df[sort_order, ]
+
+    # Add exports check
+    final_df <- audit_exports(final_df, dir_path)
+
+    # Add new columns to required list
+    required_cols <- c("name", "file", "type", "misplaced", "export_status")
+
   }
+
 
   return(final_df)
 }
+
+
+
+

@@ -9,7 +9,7 @@ target <- "."
 message("[SCAN] Running Inventory on Self...")
 inv <- audit_inventory(target)
 # You should see your new modular functions here (scan_definitions, etc.)
-print(inv[inv$type == "function", c("name", "file", "called_in_test", "misplaced")])
+print(inv[inv$type == "function", c("name", "file", "called_in_test", "misplaced", "export_status")])
 
 # --- TEST 2: DEPENDENCIES ---
 message("\n📦 Running Dependency Scan on Self...")
