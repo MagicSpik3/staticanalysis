@@ -28,3 +28,17 @@ if (!is.null(dupes)) {
   message("No duplicates found (Clean Code!).")
 }
 
+# install.packages("writexl")
+
+# Prepare the list of sheets
+report_data <- list(
+  Inventory = inv,
+  Dependencies = deps$usage_stats,
+  Ghosts = data.frame(package = deps$undeclared_ghosts), # Save the ghosts too!
+  Duplicates = if (is.null(dupes)) data.frame(Status = "Clean Code") else dupes
+)
+
+# Write single file
+writexl::write_xlsx(report_data, "static_analysis_report.xlsx")
+
+message("✅ Report generated: static_analysis_report.xlsx")
