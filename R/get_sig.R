@@ -1,9 +1,3 @@
-# 1. Create the two "conflicting" functions
-code_plus <- "function(x) { x + 10 }"
-code_mult <- "function(x) { x * 10 }"
-
-# 2. Parse them exactly how your tool does
-# (Simulating the logic currently on your disk)
 get_sig <- function(txt) {
   pd <- utils::getParseData(parse(text = txt))
 
@@ -19,6 +13,3 @@ get_sig <- function(txt) {
 
   return(paste(pd$text, collapse = " "))
 }
-
-print(paste("Plus Signature:", get_sig(code_plus)))
-print(paste("Mult Signature:", get_sig(code_mult)))
