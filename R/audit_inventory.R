@@ -2,6 +2,7 @@
 #'
 #' Scans a project to index all defined functions and global variables.
 #' Checks if these objects are referenced in the 'tests' directory.
+#' Handles both .R and .r extensions.
 #'
 #' @param dir_path String. Path to the package root (containing R/ and tests/).
 #' @return A tibble listing objects, their locations, and test coverage status.
@@ -10,12 +11,12 @@ audit_inventory <- function(dir_path) {
 
   if (!fs::dir_exists(dir_path)) stop("Directory not found.")
 
-  # 1. INDEX DEFINITIONS (The "What exists?" phase)
-  r_files <- fs::dir_ls(dir_path, recurse = TRUE, glob = "*.R")
+  # FIX 1: Use Regex to capture both .R and .r (Linux is case-sensitive)
+  r_files <- fs::dir_ls(dir_path, recurse = TRUE, regexp = "\\.[rR]$")
 
-  # Filter out tests from the definition scan (we don't care about helper funcs inside tests)
-  # We assume standard structure where source is in R/ or package root
-  source_files <- r_files[!grepl("/tests/|/spec/|/vignettes/", r_files)]
+  # Filter out tests/tinytest/spec/vignettes from the definition scan
+  # We only want to find WHERE things are defined, not where they are tested
+  source_files <- r_files[!grepl("/tinytest/|/tests/|/spec/|/vignettes/", r_files)]
 
   inventory <- list()
 
@@ -34,8 +35,20 @@ audit_inventory <- function(dir_path) {
         obj_name <- as.character(lhs)
 
         # Determine Type
+        # FIX 2: Strict check to prevent "length > 1" errors
+        # We ensure rhs[[1]] is a generic SYMBOL before converting to char
         obj_type <- "variable"
-        if (is.call(rhs) && as.character(rhs[[1]]) == "function") {
+
+        is_func_def <- FALSE
+        if (is.call(rhs)) {
+          # Check if the call head is the symbol 'function'
+          head_sym <- rhs[[1]]
+          if (is.symbol(head_sym) && as.character(head_sym) == "function") {
+            is_func_def <- TRUE
+          }
+        }
+
+        if (is_func_def) {
           obj_type <- "function"
         }
 
@@ -53,17 +66,16 @@ audit_inventory <- function(dir_path) {
   inv_df <- do.call(rbind, inventory)
 
   # 2. CHECK COVERAGE (The "Is it used?" phase)
-  test_files <- fs::dir_ls(dir_path, recurse = TRUE, glob = "*.R")
-  test_files <- test_files[grepl("/tests/|/spec/", test_files)]
+  # FIX 1 Redux: Scan all test files regardless of case
+  all_files <- fs::dir_ls(dir_path, recurse = TRUE, regexp = "\\.[rR]$")
+  test_files <- all_files[grepl("/tinytest/|/tests/|/spec/|/inst/tinytest/", all_files)]
 
-  # Read all test code as one giant blob of text for fast grepping
-  # (Regex is safer/faster here than AST because tests often use non-standard eval)
   if (length(test_files) > 0) {
+    # Read all test code as one giant blob of text for fast grepping
     all_test_code <- unlist(lapply(test_files, readLines, warn = FALSE))
 
     inv_df$called_in_test <- vapply(inv_df$name, function(nm) {
       # Look for the name followed by boundary or '('
-      # We escape special characters in the function name just in case
       pattern <- paste0("\\b", gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", nm), "\\b")
       any(grepl(pattern, all_test_code))
     }, logical(1))
