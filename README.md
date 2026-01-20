@@ -1,5 +1,4 @@
 # staticanalysis: Legacy R Modernization Toolkit
-
 **Author:** Mark London  
 **License:** MIT  
 
