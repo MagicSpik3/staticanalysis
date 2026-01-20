@@ -1,5 +1,4 @@
 test_that("migrate_namespace swaps package calls", {
-
   # 1. Setup Mock Project
   proj_dir <- fs::dir_create(file.path(tempdir(), "migration_test"))
 

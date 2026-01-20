@@ -9,7 +9,6 @@
 #' @param dry_run Logical. If TRUE, only shows what would change without writing files.
 #' @export
 migrate_namespace <- function(dir_path, from_pkg = "tidytable", to_pkg = "dplyr", dry_run = TRUE) {
-
   files <- fs::dir_ls(dir_path, recurse = TRUE, glob = "*.R")
 
   for (f in files) {
@@ -18,8 +17,6 @@ migrate_namespace <- function(dir_path, from_pkg = "tidytable", to_pkg = "dplyr"
     changed <- FALSE
 
     # 1. Replace explicit calls: pkg::func -> new::func
-    # We use a simple regex here because AST replacement is complex for 670 files,
-    # and namespace calls are usually consistent.
     pattern_explicit <- paste0(from_pkg, "::")
     replace_explicit <- paste0(to_pkg, "::")
 
@@ -29,7 +26,6 @@ migrate_namespace <- function(dir_path, from_pkg = "tidytable", to_pkg = "dplyr"
     }
 
     # 2. Replace library calls: library(pkg) -> library(new)
-    # We handle both quote styles
     pattern_lib <- paste0("library\\(['\"]?", from_pkg, "['\"]?\\)")
     replace_lib <- paste0("library(", to_pkg, ")")
 
@@ -41,10 +37,10 @@ migrate_namespace <- function(dir_path, from_pkg = "tidytable", to_pkg = "dplyr"
     # 3. Report or Write
     if (changed) {
       if (dry_run) {
-        message(sprintf("📝 [DRY RUN] Would modify: %s", fs::path_rel(f, start = dir_path)))
+        message(sprintf("[DRY RUN] Would modify: %s", fs::path_rel(f, start = dir_path)))
       } else {
         writeLines(new_code, f)
-        message(sprintf("✅ Refactored: %s", fs::path_rel(f, start = dir_path)))
+        message(sprintf("[OK] Refactored: %s", fs::path_rel(f, start = dir_path)))
       }
     }
   }

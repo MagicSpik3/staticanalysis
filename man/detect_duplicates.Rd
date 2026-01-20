@@ -9,12 +9,12 @@ detect_duplicates(dir_path, ignore_constants = TRUE)
 \arguments{
 \item{dir_path}{String. Path to the project root.}
 
-\item{ignore_constants}{Logical. If TRUE, treats 'x * 12' and 'x * 52' as identical logic.}
+\item{ignore_constants}{Logical. If TRUE, treats 'x * 12' and 'x * 52' as identical.}
 }
 \value{
 A tibble grouping functions by their logic signature.
 }
 \description{
-Scans the project for functions that are structurally identical or similar,
-ignoring variable names, spacing, and comments.
+Scans the project for functions that are structurally identical.
+Uses 'terminal' token analysis to distinguish operators like + vs *.
 }

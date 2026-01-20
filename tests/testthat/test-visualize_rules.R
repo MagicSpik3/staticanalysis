@@ -1,6 +1,6 @@
 test_that("visualize_rules consumes a Recipe object", {
   # 1. Setup: Get a compiled recipe
-  real_file <- test_path("artifacts", "accountant_rules.csv")
+  real_file <- testthat::test_path("artifacts/accountant_rules.csv")
   recipe <- compile_rules(real_file)
 
   # 2. Run Visualizer

@@ -1,5 +1,4 @@
 test_that("audit_inventory identifies functions and checks test coverage", {
-
   # 1. Setup Mock Project Structure
   proj_dir <- fs::dir_create(tempfile())
   r_dir <- fs::dir_create(file.path(proj_dir, "R"))

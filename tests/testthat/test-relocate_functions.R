@@ -1,5 +1,4 @@
 test_that("relocate_functions extracts and moves code", {
-
   # 1. Setup Source Environment
   src_dir <- fs::dir_create(file.path(tempdir(), "src_repo"))
   dest_dir <- file.path(tempdir(), "dest_repo") # Will be created by function

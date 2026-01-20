@@ -1,11 +1,12 @@
 Package: staticanalysis
-Title: Static Analysis of R code
+Title: Tools for Static Analysis of R Code
 Version: 0.0.0.9000
 Author: Mark London
 Maintainer: Mark London <marklondon75@gmail.com>
-Description: Analyses R code
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Description: Provides tools for performing static analysis on R code. 
+    Includes functions for harvesting variables, validating code structure, 
+    and generating diagnostic reports to support code quality workflows.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
@@ -23,6 +24,5 @@ Imports:
     diffobj,
     dplyr,
     fs,
-    purrr,
     rlang,
     utils

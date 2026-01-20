@@ -7,12 +7,12 @@
 audit_inventory(dir_path)
 }
 \arguments{
-\item{dir_path}{String. Path to the package root (containing R/ and tests/).}
+\item{dir_path}{String. Path to the package root.}
 }
 \value{
 A tibble listing objects, their locations, and test coverage status.
 }
 \description{
-Scans a project to index all defined functions and global variables.
-Checks if these objects are referenced in the 'tests' directory.
+Scans a project to index all defined functions and checks test coverage.
+Orchestrates scan_definitions() and check_test_coverage().
 }

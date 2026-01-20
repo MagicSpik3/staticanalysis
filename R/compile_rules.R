@@ -17,7 +17,7 @@ compile_rules <- function(file_path, allowed_vars = NULL) {
   if (!is.null(allowed_vars)) {
     invalid_vars <- setdiff(rules$Target, allowed_vars)
     if (length(invalid_vars) > 0) {
-      stop(sprintf("❌ COMPILER ERROR: Variable '%s' is not allowed.", invalid_vars[1]))
+      stop(sprintf("[ERROR] COMPILER ERROR: Variable '%s' is not allowed.", invalid_vars[1]))
     }
   }
 
@@ -29,11 +29,11 @@ compile_rules <- function(file_path, allowed_vars = NULL) {
 
     # Security Check (Always Keep This!)
     if (grepl("system|rm|list.files", logic)) {
-      stop("❌ SECURITY ALERT: Forbidden function detected.")
+      stop("[ERROR] SECURITY ALERT: Forbidden function detected.")
     }
 
     expr <- tryCatch(parse(text = logic), error = function(e) {
-      stop(sprintf("❌ SYNTAX ERROR in '%s': %s", target, e$message))
+      stop(sprintf("[ERROR] SYNTAX ERROR in '%s': %s", target, e$message))
     })
 
     recipe[[i]] <- list(

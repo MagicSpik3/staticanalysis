@@ -13,7 +13,7 @@ usethis::use_package("styler", type = "Suggests")
 
 usethis::use_build_ignore(".lintr")
 usethis::use_build_ignore("runner.R")
-usethis::use_build_ignore("tests/testthat/artifacts") # Optional: ignore test artifacts
+usethis::use_build_ignore("test.R")
 
 # 1. Promote 'rlang' to a real dependency (Required for .data)
 usethis::use_package("rlang")
@@ -29,17 +29,20 @@ usethis::use_package("usethis", type = "Suggests")
 # 3. Add 'diffobj' and 'xmlparsedata' (Required for the Audit tool we are about to build)
 usethis::use_package("diffobj", type = "Suggests")
 usethis::use_package("xmlparsedata", type = "Suggests")
+usethis::use_build_ignore(c("refactor_plan.R", "self_test.R", "update_pipeline.bat"))
 
 
-
-library(staticanalysis)
-
-devtools::install()
 devtools::load_all()
-devtools::document()
+
+
+
+testthat::test_file("tests/testthat/test-detect_duplicates.R")
+testthat::test_file("tests/testthat/test-audit_formula_functions.R")
+
+
 
 # 1. Remove the old corrupted installation
-#remove.packages("staticanalysis")
+remove.packages("staticanalysis")
 
 # 2. Load the source code afresh
 devtools::load_all()
@@ -48,10 +51,12 @@ devtools::load_all()
 devtools::document()
 
 # 4. Check
+library(staticanalysis)
 devtools::check()
-
+devtools::test()
 styler::style_pkg()
 lintr::lint_package()
+library(staticanalysis)
 here::dr_here()
 #devtools::check()
 ls("package:staticanalysis")
@@ -92,10 +97,6 @@ package_overview <- function() {
 package_overview()
 
 #devtools::load_all() # Load new functions
-devtools::test()     # Run new tests
-
-
-
 # ==============================================================================
 # STATIC ANALYSIS RUNNER
 # ==============================================================================
@@ -107,11 +108,11 @@ devtools::test()     # Run new tests
 args <- commandArgs(trailingOnly = TRUE)
 target_dir <- if (length(args) > 0) args[1] else getwd()
 
-message(sprintf("🚀 Starting Analysis on: %s", target_dir))
+message(sprintf("[START] Starting Analysis on: %s", target_dir))
 
 # Check if the package is installed; if not, try to load local source
 if (!requireNamespace("staticanalysis", quietly = TRUE)) {
-  message("⚠️ Package 'staticanalysis' not installed globally. Loading from source...")
+  message("[WARN] Package 'staticanalysis' not installed globally. Loading from source...")
   # Assumes runner.R is inside the staticanalysis repo
   devtools::load_all(".")
 } else {
@@ -145,10 +146,10 @@ tryCatch({
   deps <- staticanalysis::scan_dependencies(target_dir)
 
   if (length(deps$undeclared_ghosts) > 0) {
-    message("❌ GHOST DEPENDENCIES FOUND (Used but not in DESCRIPTION):")
+    message("[ERROR] GHOST DEPENDENCIES FOUND (Used but not in DESCRIPTION):")
     print(deps$undeclared_ghosts)
   } else {
-    message("✅ No ghost dependencies found.")
+    message("[OK] No ghost dependencies found.")
   }
 
   if (length(deps$usage_stats) > 0) {
@@ -166,11 +167,11 @@ if (length(csv_files) > 0) {
   # Just trying the first one as a smoke test
   tryCatch({
     recipe <- staticanalysis::compile_rules(csv_files[1], allowed_vars = NULL)
-    message("✅ Successfully compiled first rule file.")
-  }, error = function(e) message("⚠️ Could not compile rules: ", e$message))
+    message("[OK] Successfully compiled first rule file.")
+  }, error = function(e) message("[WARN] Could not compile rules: ", e$message))
 }
 
-message("\n✅ Analysis Complete.")
+message("\n[OK] Analysis Complete.")
 
 
 # # In your terminal at work:

@@ -25,7 +25,7 @@ run_recipe <- function(recipe) {
       },
       error = function(e) {
         stop(sprintf(
-          "❌ RUNTIME ERROR in Step %d (%s): %s",
+          "[ERROR] RUNTIME ERROR in Step %d (%s): %s",
           step$step_id, step$target, e$message
         ))
       }

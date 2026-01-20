@@ -10,25 +10,25 @@ library(fs)
 args <- commandArgs(trailingOnly = TRUE)
 target_repo <- if (length(args) > 0) args[1] else getwd()
 
-message(sprintf("🚀 Starting Refactor Analysis on: %s", target_repo))
+message(sprintf("[START] Starting Refactor Analysis on: %s", target_repo))
 
 # ------------------------------------------------------------------------------
 # STEP 1: INVENTORY & DUPLICATE DETECTION (The "Cleanup")
 # ------------------------------------------------------------------------------
-message("\n🔍 1. Scanning for Code Duplicates (Logic Clones)...")
+message("\n[SCAN] 1. Scanning for Code Duplicates (Logic Clones)...")
 
 # We look for functions that are identical (ignoring variable names/constants)
 dupes <- detect_duplicates(target_repo, ignore_constants = TRUE)
 
 if (!is.null(dupes) && nrow(dupes) > 0) {
-  message(sprintf("⚠️  Found %d duplicate function signatures!", length(unique(dupes$group_id))))
+  message(sprintf("[WARN]  Found %d duplicate function signatures!", length(unique(dupes$group_id))))
   print(head(dupes, 10))
 
   # Action: Save this report so you can manually delete the clones later
   write.csv(dupes, file.path(target_repo, "refactor_report_duplicates.csv"))
   message("📄 Report saved: refactor_report_duplicates.csv")
 } else {
-  message("✅ No logical duplicates found.")
+  message("[OK] No logical duplicates found.")
 }
 
 # ------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ message(sprintf("📊 Usage Stats: tidytable (%s) vs dplyr (%s)",
 # ------------------------------------------------------------------------------
 # STEP 3: THE SPLIT (V1 / V2 / V3)
 # ------------------------------------------------------------------------------
-message("\n✂️  3. Preparing to Split Monolith...")
+message("\n[SPLIT]  3. Preparing to Split Monolith...")
 
 # Get the full inventory of functions
 inv <- audit_inventory(target_repo)
@@ -60,7 +60,7 @@ message("   1. Open 'refactor_inventory.csv'")
 message("   2. Add a column 'Target_Repo' (V1, V2, V3, or 'Delete')")
 message("   3. Run the 'relocate_functions()' tool using that map.")
 
-message("\n✅ Analysis Complete. You are ready to split.")
+message("\n[OK] Analysis Complete. You are ready to split.")
 
 
 # Rscript refactor_plan.R /path/to/legacy/project

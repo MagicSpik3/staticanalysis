@@ -9,8 +9,9 @@ relocate_functions(inventory, function_map, source_root, dry_run = TRUE)
 \arguments{
 \item{inventory}{The dataframe returned by audit_inventory().}
 
-\item{function_map}{A named list where keys are destination paths and values are character vectors of function names.
-Example: list("path/to/repo_v1/R" = c("calc_tax", "load_v1"))}
+\item{function_map}{A named list where keys are destination paths and values are character}
+
+\item{source_root}{String. The root directory to read source files from.  <-- ADD THIS}
 
 \item{dry_run}{Logical. If TRUE, just logs actions.}
 }

@@ -1,7 +1,7 @@
 # test-pipeline.R
 test_that("End-to-End Pipeline: Compile -> Run", {
   # 1. Locate the artifact (Now correctly inside testthat/artifacts)
-  real_file <- test_path("artifacts", "accountant_rules.csv")
+  real_file <- testthat::test_path("artifacts/accountant_rules.csv")
   expect_true(file.exists(real_file))
 
   # 2. COMPILE (Should succeed)

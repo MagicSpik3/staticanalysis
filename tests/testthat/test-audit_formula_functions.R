@@ -1,7 +1,10 @@
 test_that("audit_formula_functions counts function usage correctly", {
+  # 1. Setup ISOLATED Directory
+  # We create a unique sub-folder so we don't scan debris from other tests
+  test_dir <- fs::dir_create(file.path(tempdir(), "audit_test_env"))
+  on.exit(fs::dir_delete(test_dir)) # Auto-cleanup
 
-  # 1. Setup Mock Rules
-  csv_file <- tempfile(fileext = ".csv")
+  csv_file <- file.path(test_dir, "rules.csv")
 
   # Create a rule set with mixed usage:
   # - sum() appears twice (once nested)
@@ -17,9 +20,8 @@ test_that("audit_formula_functions counts function usage correctly", {
   )
   write.csv(rules_df, csv_file, row.names = FALSE)
 
-  # 2. Run Audit
-  # We pass the *directory* containing the CSV
-  report <- audit_formula_functions(dirname(csv_file))
+  # 2. Run Audit on the ISOLATED directory
+  report <- audit_formula_functions(test_dir)
 
   # 3. Verify
   # sum: used twice
@@ -33,7 +35,4 @@ test_that("audit_formula_functions counts function usage correctly", {
   # ifelse: used once
   if_row <- report[report$function_name == "ifelse", ]
   expect_equal(if_row$count, 1)
-
-  # Cleanup
-  file.remove(csv_file)
 })

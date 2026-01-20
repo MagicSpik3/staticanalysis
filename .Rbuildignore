@@ -2,4 +2,7 @@
 ^\.Rproj\.user$
 ^\.lintr$
 ^runner\.R$
-^tests/testthat/artifacts$
+^refactor_plan\.R$
+^self_test\.R$
+^update_pipeline\.bat$
+^test\.R$

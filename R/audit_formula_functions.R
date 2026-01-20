@@ -7,7 +7,6 @@
 #' @return A frequency table of function calls (e.g., "mutate": 500, "if_else": 20).
 #' @export
 audit_formula_functions <- function(dir_path) {
-
   # 1. Read all CSVs
   files <- fs::dir_ls(dir_path, glob = "*.csv", recurse = TRUE)
   all_funcs <- character()
@@ -32,7 +31,9 @@ audit_formula_functions <- function(dir_path) {
   }
 
   # 3. Tally
-  if (length(all_funcs) == 0) return(NULL)
+  if (length(all_funcs) == 0) {
+    return(NULL)
+  }
 
   counts <- as.data.frame(table(all_funcs), stringsAsFactors = FALSE)
   colnames(counts) <- c("function_name", "count")
