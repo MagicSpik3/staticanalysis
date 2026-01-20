@@ -8,16 +8,19 @@
 #' @return A tibble grouping functions by their logic signature.
 #' @export
 detect_duplicates <- function(dir_path, ignore_constants = TRUE) {
-
   # 1. Use the new Scanner
   # PROFESSOR FIX: Sort the files to ensure deterministic order
   files <- sort(list_r_files(dir_path, "source"))
   defs <- scan_definitions(files, root_dir = dir_path)
 
-  if (is.null(defs)) return(NULL)
+  if (is.null(defs)) {
+    return(NULL)
+  }
 
   funcs <- defs[defs$type == "function", ]
-  if (nrow(funcs) == 0) return(NULL)
+  if (nrow(funcs) == 0) {
+    return(NULL)
+  }
 
   # Sort the inventory to ensure deterministic processing order
   funcs <- funcs[order(funcs$name), ]
@@ -66,7 +69,9 @@ detect_duplicates <- function(dir_path, ignore_constants = TRUE) {
     }
   }
 
-  if (length(results) == 0) return(NULL)
+  if (length(results) == 0) {
+    return(NULL)
+  }
   res_df <- do.call(rbind, results)
 
   # 4. Find Duplicates
@@ -88,7 +93,6 @@ find_func_in_exprs <- function(exprs, target_name) {
     # CRITICAL FIX: Ensure e[[1]] is a SYMBOL before checking its name
     # This prevents crashing on namespaced calls like 'pkg::func()'
     if (is.call(e) && is.symbol(e[[1]]) && as.character(e[[1]]) %in% c("<-", "=")) {
-
       # Safe name extraction
       if (is.symbol(e[[2]]) && as.character(e[[2]]) == target_name) {
         return(e[[3]])

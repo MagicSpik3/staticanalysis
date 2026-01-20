@@ -1,4 +1,39 @@
 # runner
+
+
+# --- CLEAN SLATE SCRIPT ---
+
+# 1. Force removal of the broken installed package
+# (We use a loop to kill it even if it's stuck in multiple library paths)
+pkgs <- "staticanalysis"
+if (any(pkgs %in% installed.packages()[, "Package"])) {
+  tryCatch({
+    remove.packages(pkgs)
+    message("✅ Successfully removed broken binary.")
+  }, error = function(e) {
+    message("⚠️ Could not remove package. You may need to delete this folder manually:")
+    message(find.package(pkgs))
+  })
+}
+
+# 2. Flush the R cache
+# (This clears internal S3 method lookups that might be cached)
+gc()
+
+# 3. Load from Source (The Source of Truth)
+# This reads the text files (.R), ignoring any compiled binaries
+devtools::load_all(".")
+
+# 4. Check if the "Ghost" is gone
+if (exists("find_func_lines", where = asNamespace("staticanalysis"), inherits = FALSE)) {
+  message("✅ 'find_func_lines' is present and loaded!")
+} else {
+  message("❌ Internal helper still missing. Did you save R/utils_parser.R?")
+}
+
+# 5. Run the specific test
+testthat::test_file("tests/testthat/test-refactor_misplaced.R")
+
 # This loads all your functions into memory immediately
 usethis::use_package("fs")      # For file system handling
 usethis::use_package("dplyr")   # For counting frequencies

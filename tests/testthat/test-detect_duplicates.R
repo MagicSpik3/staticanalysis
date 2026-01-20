@@ -12,7 +12,7 @@ test_that("detect_duplicates identifies logic clones", {
     "annualise_col <- function(col) { return(col * 52) }",
     "weird_math    <- function(x)   { return(x + 10) }"
   )
-  print(paste('test_setup', test_setup))
+  print(paste("test_setup", test_setup))
   writeLines(test_setup, r_file)
 
   # Run Detector

@@ -10,9 +10,9 @@ audit_inventory(dir_path)
 \item{dir_path}{String. Path to the package root.}
 }
 \value{
-A tibble listing objects, their locations, and test coverage status.
+A tibble listing objects, their locations, coverage, and placement status.
 }
 \description{
 Scans a project to index all defined functions and checks test coverage.
-Orchestrates scan_definitions() and check_test_coverage().
+Also validates if functions are in correctly named files.
 }
