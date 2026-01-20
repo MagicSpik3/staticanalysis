@@ -1,40 +1,75 @@
 #' Visualize Migration Progress
 #'
-#' Draws a network graph showing the decoupling of the legacy monolith.
+#' Renders a network graph of the project functions.
+#' Red nodes   = Misplaced/Legacy functions (Technical Debt).
+#' Green nodes = Refactored/Clean functions.
+#' Arrows      = Dependency calls.
 #'
-#' @param inventory A dataframe from audit_inventory().
+#' @param inventory The dataframe from audit_inventory()
+#' @param return_dot Logical. If TRUE, returns the DOT code string instead of rendering the graph.
 #' @export
-visualize_progress <- function(inventory) {
+visualize_progress <- function(inventory, return_dot = FALSE) {
   if (!requireNamespace("DiagrammeR", quietly = TRUE)) {
-    stop("DiagrammeR is required for visualization.")
+    stop("Package 'DiagrammeR' is required for visualization.")
   }
 
-  # 1. Classify Status
-  inventory$status <- "legacy"
+  # 1. Filter: Drop variables, keep only functions
+  funcs <- inventory[inventory$type == "function", ]
 
-  # "Migrated" means it lives in a file that matches its name (approx)
-  # e.g., function 'clean_data' in 'R/clean_data.R'
-  is_migrated <- mapply(
-    function(n, f) grepl(n, f, fixed = TRUE),
-    inventory$name, inventory$file
+  if (nrow(funcs) == 0) {
+    stop("No functions found in inventory to visualize.")
+  }
+
+  # 2. Map Internal Dependencies
+  edges_df <- map_internal_calls(inventory)
+
+  # 3. Define Visual Styles
+  # Green (Honeydew) for Clean, Red (Mistyrose) for Misplaced
+  node_fill <- ifelse(funcs$misplaced, "mistyrose", "honeydew")
+  node_border <- ifelse(funcs$misplaced, "red", "darkgreen")
+
+  # Create the Node Data Frame
+  nodes <- DiagrammeR::create_node_df(
+    n = nrow(funcs),
+    label = funcs$name,
+    type = "function",
+    shape = "oval",
+    style = "filled",
+    color = node_border,
+    fillcolor = node_fill,
+    penwidth = 2
   )
 
-  inventory$status[is_migrated] <- "migrated_untested"
-  inventory$status[is_migrated & inventory$called_in_test] <- "complete"
+  # 4. Create the Edge Data Frame
+  # We must map names back to DiagrammeR's internal IDs
+  id_map <- setNames(nodes$id, nodes$label)
 
-  # 2. Build Graph Data
-  # We group by "File" to show clusters breaking away
-  files <- unique(inventory$file)
-  nodes <- data.frame(
-    id = seq_along(files),
-    label = files,
-    shape = ifelse(grepl("legacy|script", files), "database", "note"),
-    color = "lightblue",
-    stringsAsFactors = FALSE
-  )
+  if (nrow(edges_df) > 0) {
+    graph_edges <- DiagrammeR::create_edge_df(
+      from = id_map[edges_df$from],
+      to   = id_map[edges_df$to],
+      rel  = "calls",
+      color = "slategray",
+      arrowhead = "vee"
+    )
+  } else {
+    graph_edges <- DiagrammeR::create_edge_df(from = integer(0), to = integer(0))
+  }
 
-  # Color nodes based on completeness
-  DiagrammeR::create_graph() |>
+  # 5. Build Graph
+  graph <- DiagrammeR::create_graph() |>
     DiagrammeR::add_node_df(nodes) |>
-    DiagrammeR::render_graph()
+    DiagrammeR::add_edge_df(graph_edges) |>
+    DiagrammeR::add_global_graph_attrs(
+      attr = "layout",
+      value = "dot",
+      attr_type = "graph"
+    )
+
+  # 6. Output
+  if (return_dot) {
+    return(DiagrammeR::generate_dot(graph))
+  }
+
+  DiagrammeR::render_graph(graph)
 }

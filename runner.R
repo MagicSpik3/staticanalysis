@@ -46,6 +46,8 @@ if (exists("find_func_lines", where = asNamespace("staticanalysis"), inherits = 
 # 5. Run the specific test
 testthat::test_file("tests/testthat/test-refactor_misplaced.R")
 
+usethis::use_pkgdown_github_pages()
+
 # This loads all your functions into memory immediately
 usethis::use_package("fs")      # For file system handling
 usethis::use_package("dplyr")   # For counting frequencies

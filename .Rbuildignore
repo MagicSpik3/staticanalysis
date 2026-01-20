@@ -6,3 +6,7 @@
 ^self_test\.R$
 ^update_pipeline\.bat$
 ^test\.R$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
