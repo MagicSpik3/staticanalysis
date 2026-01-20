@@ -1,7 +1,19 @@
 # runner
-
+covr::package_coverage(path = ".",
+                       type = "tests",
+                       combine_types = FALSE,
+                       relative_path = TRUE,
+                       quiet = TRUE,
+                       clean = TRUE,
+                       line_exclusions = NULL,
+                       function_exclusions = NULL,
+                       pre_clean = TRUE)
 
 # --- CLEAN SLATE SCRIPT ---
+# delete me:
+# data <- readxl::read_excel(testthat::test_path("testdata/input.xlsx"))
+#
+
 
 # 1. Force removal of the broken installed package
 # (We use a loop to kill it even if it's stuck in multiple library paths)
