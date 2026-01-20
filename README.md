@@ -3,39 +3,112 @@
 **Author:** Mark London  
 **License:** MIT  
 
-## Overview
-`staticanalysis` is a dual-purpose toolkit designed to bridge the gap between legacy R code
-(often embedded in Excel or monolithic scripts) and modern, software engineering practices. 
+# staticanalysis
 
-It focuses on **Safety**, **Transparency**, and **Diplomacy**.
+**staticanalysis** provides a suite of tools for auditing R project health, detecting logic duplication, and automating the refactoring of legacy "monolith" scripts into modern, testable packages.
 
-## Architecture
-The package operates on two parallel tracks:
+Unlike standard linters (which check style), `staticanalysis` checks **structure** and **logic**. It uses robust Abstract Syntax Tree (AST) parsing to ensure deterministic results, even when file timestamps or local environments vary.
 
-### Track A: The Repo Auditor (Verification)
-* **Goal:** Ensure refactored code matches legacy behavior.
-* **Mechanism:** AST-based parsing (not regex) to "fingerprint" functions and detect drift.
-* **Status:** Planned (Migration of legacy prototype).
+## Installation
 
-### Track B: The Excel Compiler (Execution)
-* **Goal:** Safely execute business logic defined in non-developer formats (Excel/CSV).
-* **Mechanism:** 1.  **Compiler:** Reads text rules $\rightarrow$ Validates Schema $\rightarrow$ Generates a "Recipe" (State Machine).
-    2.  **Runtime:** Executes the Recipe in a sandboxed environment.
-    3.  **Visualizer:** Maps the Recipe to a flow diagram for stakeholders.
-* **Status:** Active Prototype (`compile_rules`, `run_recipe`).
+You can install the development version from [GitHub](https://github.com/) with:
 
-## Usage
+```r
+# install.packages("devtools")
+devtools::install_github("yourusername/staticanalysis")
 
-### Safe Execution of Accountant Rules
+```
+
+## Core Workflow
+
+The package is designed to support the **"Strangler Fig"** migration pattern: identifying legacy code, locking it down with tests, and extracting it piece by piece.
+
+### 1. Audit Project Health (`audit_inventory`)
+
+Get a high-level view of your project's structure. This tool flags:
+
+* **Test Coverage:** Which functions lack corresponding unit tests.
+* **Misplaced Functions:** Functions defined in files that do not match their name (violating the "One Function, One File" rule).
+
 ```r
 library(staticanalysis)
 
-# 1. Compile text rules into a safe Recipe object
-# (Catches typos and forbidden variables before running)
-recipe <- compile_rules("config/accountant_rules.csv")
+# Run a full inventory scan
+inv <- audit_inventory(".")
 
-# 2. Visualize logic for sign-off
-print(visualize_recipe(recipe))
+# View functions that need to be moved to their own files
+print(inv[inv$misplaced == TRUE, ])
 
-# 3. Execute safely
-results <- run_recipe(recipe)
+```
+
+### 2. Detect Logic Duplicates (`detect_duplicates`)
+
+Identify "Copy-Paste" programming. This function uses AST token analysis to find structural clones. It is strictly typed, meaning it distinguishes between `x + 1` and `x * 1`, but ignores variable names (`foo` vs `bar`) and constants (optional).
+
+```r
+# Find functions with identical logic signatures
+dupes <- detect_duplicates(".")
+
+if (!is.null(dupes)) {
+  print(dupes)
+}
+
+```
+
+### 3. Automated Refactoring (`refactor_misplaced`)
+
+Automatically clean up "Roommate Functions" (multiple functions living in a single file). This tool performs a surgical extraction:
+
+1. Identifies misplaced functions.
+2. Extracts their code and Roxygen documentation (bottom-up to preserve line numbers).
+3. Moves them to `R/<function_name>.R`.
+4. Updates the original file.
+
+```r
+# Dry run to see what will happen
+refactor_misplaced(dry_run = TRUE)
+
+# Execute the surgery
+refactor_misplaced(dry_run = FALSE)
+
+```
+
+### 4. Legacy Migration (`scaffold_migration`)
+
+The primary tool for breaking up monolith scripts. It extracts a specific function from a legacy script and generates a corresponding **"Red Light"** test file.
+
+```r
+# 1. Extract 'process_data' from 'old_script.R'
+# 2. Create 'R/process_data.R'
+# 3. Create 'tests/testthat/test-process_data.R' (Failing by default)
+scaffold_migration("process_data", source_file = "legacy/script.R")
+
+```
+
+### 5. Dependency Scanning (`scan_dependencies`)
+
+Find "Ghost Dependencies" (packages used in code but missing from `DESCRIPTION`) and unused imports.
+
+```r
+deps <- scan_dependencies(".")
+print(deps$undeclared_ghosts)
+
+```
+
+## Visualizing Progress
+
+Use `visualize_progress()` to generate a network graph showing the decoupling of your project. Nodes represent functions, and edges represent dependencies or file membership.
+
+```r
+# Requires DiagrammeR
+visualize_progress(inv)
+
+```
+
+## Technical Note: AST Parsing
+
+This package uses a custom geometry-based AST traversal engine (`find_func_lines`). This ensures that function boundaries are correctly identified regardless of nesting depth (e.g., functions wrapped in `tryCatch` or `local`), preventing the common "parser mismatch" errors found in regex-based tools.
+
+## License
+
+MIT
