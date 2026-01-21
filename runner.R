@@ -2,6 +2,7 @@
 # Ignore specific patterns from the package build
 usethis::use_build_ignore("[.]xlsx$")
 usethis::use_build_ignore("[.]png$")
+usethis::use_build_ignore("[.]txt$")
 
 # Stop Git from tracking them too
 usethis::use_git_ignore("*.xlsx")

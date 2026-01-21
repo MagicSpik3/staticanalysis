@@ -1,0 +1,140 @@
+To set up a robust R development workflow on an internal GitLab instance, you need two components: a local "gatekeeper" to catch errors before they leave your machine, and a remote pipeline to verify the code in a clean environment.
+
+Here is a guide to setting up the Makefile, Git hooks, and the GitLab CI configuration for an internal environment.
+
+### Phase 1: Local "Gatekeeper" (Makefile & Git Hook)
+
+This setup ensures that `make` runs your tests and checks coverage locally. The Git hook then enforces this by running `make` automatically when you attempt to push.
+
+#### 1. The Makefile
+
+Create a file named `Makefile` in your project root. This standardizes your commands.
+
+```makefile
+# Makefile
+all: test coverage
+
+test:
+	Rscript -e 'devtools::test()'
+
+coverage:
+	Rscript -e 'covr::report(file = "coverage-report.html")'
+	@echo "Coverage report generated at coverage-report.html"
+
+check:
+	Rscript -e 'devtools::check()'
+
+clean:
+	rm -f coverage-report.html
+
+```
+
+#### 2. The Pre-Push Hook
+
+To strictly "allow" or "deny" a push based on these tests, you must use a Git hook.
+
+1. Navigate to your repository's hook directory: `.git/hooks/`.
+2. Create a file named `pre-push` (no extension).
+3. Add the following script:
+
+```bash
+#!/bin/sh
+
+echo "Running pre-push checks..."
+
+# Run the Makefile 'test' target
+make test
+
+# Capture the exit code
+RESULT=$?
+
+if [ $RESULT -ne 0 ]; then
+    echo "Tests failed. Push aborted."
+    exit 1
+fi
+
+echo "Tests passed. Proceeding with push."
+exit 0
+
+```
+
+4. Make the hook executable:
+```bash
+chmod +x .git/hooks/pre-push
+
+```
+
+
+
+Now, every time you run `git push`, the system will run your unit tests. If they fail, the push is rejected.
+
+---
+
+### Phase 2: GitLab CI/CD (Internal System)
+
+For an internal private system, the biggest challenges are usually **Docker image availability** and **package installation** (firewalls often block CRAN).
+
+Create a file named `.gitlab-ci.yml` in your repository root.
+
+```yaml
+stages:
+  - test
+  - coverage
+
+# Define the Docker image.
+# NOTE: If your internal system cannot access Docker Hub,
+# you must use your internal registry path here (e.g., registry.internal.corp/rocker/verse:latest).
+image: rocker/verse:latest
+
+variables:
+  # Create a library path for CI to avoid conflicts
+  R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib"
+
+cache:
+  paths:
+    - $R_LIBS_USER
+
+before_script:
+  - mkdir -p $R_LIBS_USER
+  # If your internal network blocks CRAN, configure your internal repo here:
+  # - echo 'options(repos = c(CRAN = "http://internal-cran-mirror/"))' >> .Rprofile
+  - R -e 'install.packages(c("devtools", "covr", "testthat"))'
+  - R -e 'devtools::install_deps(dependencies = TRUE)'
+
+run_tests:
+  stage: test
+  script:
+    - R -e 'devtools::test()'
+  only:
+    - main
+    - merge_requests
+
+run_coverage:
+  stage: coverage
+  script:
+    - R -e 'covr::package_coverage()'
+  coverage: '/Coverage: \d+.\d+%/'
+
+```
+
+#### Key Considerations for Internal Systems:
+
+* **The Image:** If `rocker/verse` fails to pull, your IT team likely mirrors Docker Hub. You will need to change the `image:` line to point to that internal mirror.
+* **Package Management:** If `install.packages` hangs, your server likely cannot reach the public internet. You will need to point R to your internal package manager (like RStudio Package Manager or a miniCRAN mirror) by editing the `.Rprofile` in the `before_script`.
+* **Runners:** Ensure your project has a runner assigned. Go to **Settings > CI/CD > Runners** in GitLab to verify a runner is active and "Green".
+
+---
+
+### Phase 3: Project Structure Checklist
+
+To ensure the commands above work, your R project should follow standard package structure (created via `usethis::create_package()` or similar):
+
+* `DESCRIPTION` (Lists dependencies)
+* `tests/testthat/` (Contains your unit tests)
+* `R/` (Contains your functions)
+
+**Recommended R Packages for this workflow:**
+
+* `testthat`: For the actual unit tests.
+* `covr`: For calculating test coverage.
+* `lintr`: (Optional but recommended) Add a linting step to your Makefile if you want to enforce style guidelines alongside functionality.
