@@ -1,0 +1,54 @@
+stages:
+  - build-check
+  - test
+  - coverage
+
+# Use your internal image registry if needed
+image: rocker/verse:latest
+
+variables:
+  R_LIBS_USER: "$CI_PROJECT_DIR/ci/lib"
+
+cache:
+  paths:
+    - $R_LIBS_USER
+
+before_script:
+  - mkdir -p $R_LIBS_USER
+  # FIX: Added DT and htmltools here so the coverage report works
+  - R -e 'install.packages(c("devtools", "covr", "testthat", "DT", "htmltools"))'
+  - R -e 'devtools::install_deps(dependencies = TRUE)'
+
+# Stage 1: Build Check (Strict)
+check_package:
+  stage: build-check
+  script:
+    - make check
+  artifacts:
+    when: on_failure
+    paths:
+      - *.Rcheck/00install.out
+      - *.Rcheck/00check.log
+
+# Stage 2: Unit Tests (with GitLab UI Integration)
+run_tests:
+  stage: test
+  script:
+    # We use Rscript directly here (instead of make) to inject the Junit reporter
+    # This gives you the nice "Tests" tab in the GitLab UI
+    - Rscript -e 'testthat::test_local(reporter = c("summary", testthat::JunitReporter$new(file = "junit_result.xml")))'
+  artifacts:
+    when: always
+    reports:
+      junit: junit_result.xml
+
+# Stage 3: Coverage (HTML Report)
+run_coverage:
+  stage: coverage
+  script:
+    - make coverage
+  coverage: '/Coverage: \d+.\d+%/'
+  artifacts:
+    paths:
+      - coverage-report.html
+    expire_in: 1 week
