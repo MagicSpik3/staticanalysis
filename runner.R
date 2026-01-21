@@ -8,7 +8,7 @@ usethis::use_build_ignore("[.]txt$")
 usethis::use_git_ignore("*.xlsx")
 usethis::use_git_ignore("*.png")
 covr::package_coverage(path = ".",
-                       type = "tests",
+                       type = "all",
                        combine_types = FALSE,
                        relative_path = TRUE,
                        quiet = TRUE,

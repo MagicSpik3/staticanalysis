@@ -4,8 +4,8 @@ if (!requireNamespace("covr", quietly = TRUE)) install.packages("covr")
 # 1. Run the coverage with your specific settings
 cov <- covr::package_coverage(
   path = ".",
-  type = "all",
-  combine_types = FALSE,
+  type = "test",
+  combine_types = TRUE,   # <--- This must be TRUE for the HTML report to work
   relative_path = TRUE,
   quiet = TRUE,
   clean = TRUE,
