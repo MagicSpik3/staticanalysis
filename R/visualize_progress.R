@@ -4,7 +4,7 @@
 #' Red nodes   = Misplaced/Legacy functions (Technical Debt).
 #' Green nodes = Refactored/Clean functions.
 #' Arrows      = Dependency calls.
-#'
+#' @importFrom stats setNames
 #' @param inventory The dataframe from audit_inventory()
 #' @param return_dot Logical. If TRUE, returns the DOT code string instead of rendering the graph.
 #' @export
