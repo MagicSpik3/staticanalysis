@@ -1,0 +1,47 @@
+name: R-CMD-check
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  # In GitLab, stages run sequentially.
+  # In GitHub, jobs run in parallel unless you add 'needs: [job_name]'
+
+  test-and-coverage:
+    runs-on: ubuntu-latest
+
+    # This mimics the "image: rocker/verse" from your GitLab config
+    container:
+      image: rocker/verse:latest
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          R -e 'install.packages(c("devtools", "covr", "testthat"))'
+          R -e 'devtools::install_deps(dependencies = TRUE)'
+
+      # Here we reuse your portable Makefile
+      - name: Build Check
+        run: make check
+
+      - name: Run Tests
+        run: make test
+
+      - name: Generate Coverage
+        run: make coverage
+
+      # Save the HTML report as an artifact (Just like GitLab)
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always() # Run even if tests fail
+        with:
+          name: coverage-report
+          path: coverage-report.html
