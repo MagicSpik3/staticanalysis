@@ -25,7 +25,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          R -e 'install.packages(c("devtools", "covr", "testthat"))'
+          R -e 'install.packages(c("devtools", "covr", "testthat", "DT", "htmltools"))'
           R -e 'devtools::install_deps(dependencies = TRUE)'
 
       # Here we reuse your portable Makefile
