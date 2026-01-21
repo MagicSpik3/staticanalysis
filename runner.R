@@ -1,4 +1,11 @@
 # runner
+# Ignore specific patterns from the package build
+usethis::use_build_ignore("[.]xlsx$")
+usethis::use_build_ignore("[.]png$")
+
+# Stop Git from tracking them too
+usethis::use_git_ignore("*.xlsx")
+usethis::use_git_ignore("*.png")
 covr::package_coverage(path = ".",
                        type = "tests",
                        combine_types = FALSE,
@@ -47,7 +54,11 @@ if (exists("find_func_lines", where = asNamespace("staticanalysis"), inherits = 
 testthat::test_file("tests/testthat/test-refactor_misplaced.R")
 
 usethis::use_pkgdown_github_pages()
-
+usethis::create_github_token()
+gitcreds::gitcreds_set()
+gitcreds::gitcreds_delete()
+2
+22
 # This loads all your functions into memory immediately
 usethis::use_package("fs")      # For file system handling
 usethis::use_package("dplyr")   # For counting frequencies
