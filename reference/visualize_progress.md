@@ -1,15 +1,22 @@
 # Visualize Migration Progress
 
-Draws a network graph showing the decoupling of the legacy monolith.
+Renders a network graph of the project functions. Red nodes =
+Misplaced/Legacy functions (Technical Debt). Green nodes =
+Refactored/Clean functions. Arrows = Dependency calls.
 
 ## Usage
 
 ``` r
-visualize_progress(inventory)
+visualize_progress(inventory, return_dot = FALSE)
 ```
 
 ## Arguments
 
 - inventory:
 
-  A dataframe from audit_inventory().
+  The dataframe from audit_inventory()
+
+- return_dot:
+
+  Logical. If TRUE, returns the DOT code string instead of rendering the
+  graph.
