@@ -7,12 +7,57 @@
 scan_dependencies(dir_path)
 }
 \arguments{
-\item{dir_path}{String. Path to the project root.}
+\item{dir_path}{A character string specifying the path to the project root.
+Must contain R files and optionally a DESCRIPTION file.}
 }
 \value{
-A list containing 'usage_stats', 'ghosts', and 'unused'.
+A named list containing:
+\itemize{
+\item \code{usage_stats}: A data frame of package usage counts.
+\item \code{undeclared_ghosts}: A character vector of packages used but not listed in DESCRIPTION.
+\item \code{unused_declarations}: A character vector of packages listed in DESCRIPTION but not found in code.
+}
 }
 \description{
-Scans all R scripts for package usage.
-Returns usage counts to help identify "bloated" single-use imports.
+Scans a specified project directory to detect which R packages are actually
+being used in the code (via \code{library()}, \code{::}, or Roxygen tags) and compares
+them against the \code{DESCRIPTION} file.
+
+This helps identify:
+\itemize{
+\item \strong{Ghosts:} Packages used in the code but missing from \code{DESCRIPTION}.
+\item \strong{Unused:} Packages declared in \code{DESCRIPTION} but never used in code.
+\item \strong{Bloat:} A frequency table of how often each package is called.
+}
+}
+\examples{
+# 1. Create a temporary "Fake Project" for testing
+tmp_proj <- tempfile("test_project")
+dir.create(tmp_proj)
+
+# 2. Create a dummy DESCRIPTION file
+desc_content <- c(
+  "Package: TestProj",
+  "Imports: dplyr, fs"
+)
+writeLines(desc_content, file.path(tmp_proj, "DESCRIPTION"))
+
+# 3. Create a dummy R script
+script_content <- c(
+  "library(dplyr)",
+  "x <- tidyr::pivot_longer(mtcars)"
+)
+writeLines(script_content, file.path(tmp_proj, "script.R"))
+
+# 4. Run the scanner
+# (We wrap in if/try in case internal dependencies aren't loaded in this example context)
+if (requireNamespace("fs", quietly = TRUE)) {
+  try({
+    result <- scan_dependencies(tmp_proj)
+    print(result$undeclared_ghosts)
+  })
+}
+
+# 5. Cleanup
+unlink(tmp_proj, recursive = TRUE)
 }

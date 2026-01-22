@@ -1,5 +1,10 @@
+# .lintr
 linters: linters_with_defaults(
     line_length_linter(120),
     return_linter = NULL,
     object_name_linter = NULL
+  )
+exclusions: list(
+    "inst/tinytest",  # Don't lint the test files
+    "R/RcppExports.R" # Don't lint auto-generated files
   )

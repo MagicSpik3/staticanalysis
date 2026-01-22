@@ -4,11 +4,16 @@
 \alias{visualize_progress}
 \title{Visualize Migration Progress}
 \usage{
-visualize_progress(inventory)
+visualize_progress(inventory, return_dot = FALSE)
 }
 \arguments{
-\item{inventory}{A dataframe from audit_inventory().}
+\item{inventory}{The dataframe from audit_inventory()}
+
+\item{return_dot}{Logical. If TRUE, returns the DOT code string instead of rendering the graph.}
 }
 \description{
-Draws a network graph showing the decoupling of the legacy monolith.
+Renders a network graph of the project functions.
+Red nodes   = Misplaced/Legacy functions (Technical Debt).
+Green nodes = Refactored/Clean functions.
+Arrows      = Dependency calls.
 }

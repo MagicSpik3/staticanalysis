@@ -13,7 +13,9 @@ RoxygenNote: 7.3.3
 Suggests:
     devtools,
     here,
+    knitr,
     lintr,
+    rmarkdown,
     styler,
     testthat (>= 3.0.0),
     usethis,
@@ -28,3 +30,4 @@ Imports:
     tools,
     utils
 URL: https://magicspik3.github.io/staticanalysis/
+VignetteBuilder: knitr

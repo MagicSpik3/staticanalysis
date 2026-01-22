@@ -1,4 +1,7 @@
 # runner
+usethis::use_vignette("how-to-audit-dependencies")
+
+usethis::use_vignette()
 # Ignore specific patterns from the package build
 usethis::use_build_ignore("[.]xlsx$")
 usethis::use_build_ignore("[.]png$")
@@ -16,7 +19,16 @@ covr::package_coverage(path = ".",
                        line_exclusions = NULL,
                        function_exclusions = NULL,
                        pre_clean = TRUE)
-
+cov <- covr::package_coverage(
+  path = ".",
+  type = "all",           # <--- Runs Tests, Vignettes, and Examples
+  combine_types = FALSE,   # <--- CRITICAL: Merges them so the HTML report doesn't crash
+  relative_path = TRUE,
+  quiet = FALSE,          # Change to FALSE so you can see if the vignette errors in the logs
+  clean = TRUE,
+  pre_clean = TRUE
+)
+cov
 # --- CLEAN SLATE SCRIPT ---
 # delete me:
 # data <- readxl::read_excel(testthat::test_path("testdata/input.xlsx"))
