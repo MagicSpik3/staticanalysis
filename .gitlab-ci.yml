@@ -14,8 +14,11 @@ cache:
 before_script:
   - mkdir -p $R_LIBS_USER
   # CHANGE: Install tinytest instead of testthat
-  - R -e 'install.packages(c("devtools", "covr", "tinytest", "DT", "htmltools"))'
+#  - R -e 'install.packages(c("devtools", "covr", "tinytest", "DT", "htmltools"))'
+#  - R -e 'devtools::install_deps(dependencies = TRUE)'
+  - R -e 'install.packages(c("devtools", "covr", "testthat", "DT", "htmltools", "styler", "lintr"))'
   - R -e 'devtools::install_deps(dependencies = TRUE)'
+
 
 # Stage 1: Build Check
 check_package:
@@ -24,10 +27,22 @@ check_package:
     - make check
 
 # Stage 2: Unit Tests (Tinytest)
+#run_tests:
+#  stage: test
+#  script:
+#    - make test
+
+
+# REVERT: Test Stage using Testthat Reporter
 run_tests:
   stage: test
   script:
-    - make test
+    # We bypass the Makefile here to inject the Junit reporter for GitLab
+    - Rscript -e 'testthat::test_local(reporter = c("summary", testthat::JunitReporter$new(file = "junit_result.xml")))'
+  artifacts:
+    when: always
+    reports:
+      junit: junit_result.xml
 
 # Stage 3: Coverage
 run_coverage:
