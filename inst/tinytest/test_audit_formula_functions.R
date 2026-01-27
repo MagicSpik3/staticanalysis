@@ -1,19 +1,10 @@
 # Test: audit_formula_functions counts function usage correctly
   # 1. Setup ISOLATED Directory
   # We create a unique sub-folder so we don't scan debris from other tests
-  tmp <- tempdir()
-  rules_dir <- file.path(tmp, "audit_test_env") # Define the folder path separate from file
+  test_dir <- fs::dir_create(file.path(tempdir(), "audit_test_env"))
+  on.exit(fs::dir_delete(test_dir)) # Auto-cleanup
 
-  # 1. Force create the directory (recursive = TRUE handles the nesting)
-  if (!dir.exists(rules_dir)) {
-    dir.create(rules_dir, recursive = TRUE)
-  }
-
-  rules_file <- file.path(rules_dir, "rules.csv")
-
-  # 2. Now write the file
-  write.csv(my_data, rules_file)
-
+  csv_file <- file.path(test_dir, "rules.csv")
 
   # Create a rule set with mixed usage:
   # - sum() appears twice (once nested)

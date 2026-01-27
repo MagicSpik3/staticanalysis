@@ -236,3 +236,34 @@ message("\n[OK] Analysis Complete.")
 #Rscript runner.R /home/work/repos/BigProject/SubPackageA
 #Rscript runner.R /home/work/repos/BigProject/SubPackageB
 
+
+
+library(staticanalysis)
+
+# 1. Run the scan
+smells <- detect_code_smells(".")
+
+# 2. See the results
+print_smells(smells)
+
+library(mypkg)
+
+# 1. Run the scan
+smells <- detect_code_smells("../mypkg")
+
+# 2. See the results
+print_smells(smells)
+mypkg::is_prime_bad(3)
+# Try to trace the function that calls sapply in runner.R (if it's inside a function)
+# Or just pick an exported function from mypkg
+staticanalysis::visualize_callers("is_prime_bad", dir_path = "../mypkg")
+
+
+# Render in RStudio Viewer
+staticanalysis::visualize_callers("is_prime_bad", dir_path = "../mypkg")
+
+# Save to disk for your report
+staticanalysis::visualize_callers("is_prime_bad", dir_path = "../mypkg", save_dot = "bad_prime_flow.dot")
+
+
+

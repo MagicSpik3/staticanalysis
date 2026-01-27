@@ -1,0 +1,7 @@
+digraph {
+  graph [rankdir=LR, layout=dot, fontname=Helvetica];
+  node [shape=box, style=filled, fillcolor=lightblue, fontname=Helvetica];
+  "is_prime_bad" [fillcolor=salmon, style=filled, shape=doubleoctagon];
+  "nth_prime_bad" -> "is_prime_bad";
+  "primes_up_to_bad" -> "is_prime_bad";
+}
