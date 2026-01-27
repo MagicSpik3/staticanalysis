@@ -265,5 +265,43 @@ staticanalysis::visualize_callers("is_prime_bad", dir_path = "../mypkg")
 # Save to disk for your report
 staticanalysis::visualize_callers("is_prime_bad", dir_path = "../mypkg", save_dot = "bad_prime_flow.dot")
 
+# 1. You already have 'dynamic_data' from your analysis above.
 
+getNamespaceExports("mypkg")
+library(mypkg)
+library(rdyntrace)
+
+# 1. Dynamic Phase
+instrument_package("mypkg")
+calls <- list(
+  hello              = list(fn = mypkg::hello,              args = list()),
+  is_prime_good      = list(fn = mypkg::is_prime_good,      args = list(1234567L)),
+  is_prime_bad       = list(fn = mypkg::is_prime_bad,       args = list(1234567L)),
+  nth_prime_bad      = list(fn = mypkg::nth_prime_bad,      args = list(1234L)),
+  nth_prime_good     = list(fn = mypkg::nth_prime_good,     args = list(1234L)),
+  primes_up_to_bad   = list(fn = mypkg::primes_up_to_bad,   args = list(12345L)),
+  primes_up_to_good  = list(fn = mypkg::primes_up_to_good,  args = list(12345L))
+)
+results <- vector("list", length(calls))
+names(results) <- names(calls)
+
+for (nm in names(calls)) {
+  fn   <- calls[[nm]]$fn
+  args <- calls[[nm]]$args
+  # capture call string for readability
+  call_str <- paste0(deparse(substitute(fn)), "(", paste(sapply(args, deparse), collapse = ", "), ")")
+  results[[nm]] <- list(
+    call   = call_str,
+    result = do.call(fn, args)
+  )
+}
+
+ts()
+dynamic_data <- trace_results()
+print(dynamic_data)
+
+
+restore_package("mypkg")
+# 2. Generate the Heatmap
+staticanalysis::visualize_performance("nth_prime_bad", dynamic_data, dir_path = "../mypkg")
 
