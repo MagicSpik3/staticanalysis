@@ -32,6 +32,11 @@ detect_code_smells <- function(dir_path = ".") {
       check_reproducibility(pdata, f),
       check_dynamic_execution(pdata, f),
       check_sapply_usage(pdata, f)
+
+      # ROBUSTNESS CHECKS (Now calling the new file)
+      check_ambiguous_selection(pdata, f), # <--- NEW
+      check_unsafe_boolean(pdata, f),
+      check_unsafe_sequencing(pdata, f)
     ))
   }
 
