@@ -31,7 +31,7 @@ detect_code_smells <- function(dir_path = ".") {
       check_environment_pollution(pdata, f),
       check_reproducibility(pdata, f),
       check_dynamic_execution(pdata, f),
-      check_sapply_usage(pdata, f)
+      check_sapply_usage(pdata, f),
 
       # ROBUSTNESS CHECKS (Now calling the new file)
       check_ambiguous_selection(pdata, f), # <--- NEW
