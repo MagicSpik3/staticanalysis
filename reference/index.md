@@ -21,8 +21,7 @@
 - [`compile_rules()`](https://magicspik3.github.io/staticanalysis/reference/compile_rules.md)
   : Compile Rules
 - [`detect_code_smells()`](https://magicspik3.github.io/staticanalysis/reference/detect_code_smells.md)
-  : Detect Code Smells (Orchestrator) Scans the codebase for dangerous
-  patterns and classifies them by severity.
+  : Detect Code Smells
 - [`detect_duplicates()`](https://magicspik3.github.io/staticanalysis/reference/detect_duplicates.md)
   : Detect Code Logic Duplicates (Clones)
 - [`detect_typos()`](https://magicspik3.github.io/staticanalysis/reference/detect_typos.md)

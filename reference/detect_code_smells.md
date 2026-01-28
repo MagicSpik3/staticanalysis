@@ -1,6 +1,4 @@
-# Detect Code Smells (Orchestrator) Scans the codebase for dangerous patterns and classifies them by severity.
-
-Detect Code Smells (Orchestrator)
+# Detect Code Smells
 
 Scans the codebase for dangerous patterns and classifies them by
 severity.
