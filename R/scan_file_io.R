@@ -43,16 +43,14 @@ scan_file_io <- function(dir_path = ".") {
           new_row$type <- "literal"
           new_row$path_pattern <- file_arg
           found_ops[[length(found_ops) + 1]] <- new_row
-        }
-        else if (is.call(file_arg) && as.character(file_arg[[1]]) == "file.path") {
+        } else if (is.call(file_arg) && as.character(file_arg[[1]]) == "file.path") {
           if (length(file_arg) >= 3 && is.symbol(file_arg[[2]]) && is.character(file_arg[[3]])) {
             new_row$type <- "constructed"
             new_row$path_pattern <- as.character(file_arg[[3]])
             new_row$root_var <- as.character(file_arg[[2]])
             found_ops[[length(found_ops) + 1]] <- new_row
           }
-        }
-        else if (is.symbol(file_arg)) {
+        } else if (is.symbol(file_arg)) {
           new_row$type <- "variable"
           new_row$root_var <- as.character(file_arg)
           found_ops[[length(found_ops) + 1]] <- new_row
@@ -79,6 +77,8 @@ scan_file_io <- function(dir_path = ".") {
     }
   }
 
-  if (length(all_ops) == 0) return(NULL)
+  if (length(all_ops) == 0) {
+    return(NULL)
+  }
   return(do.call(rbind, all_ops))
 }

@@ -2,7 +2,9 @@
 #' @noRd
 check_absolute_paths <- function(pdata, file) {
   strings <- pdata[pdata$token == "STR_CONST", ]
-  if (nrow(strings) == 0) return(NULL)
+  if (nrow(strings) == 0) {
+    return(NULL)
+  }
 
   clean_strs <- gsub("^[\"']|[\"']$", "", strings$text)
 
@@ -62,7 +64,9 @@ check_unsafe_boolean <- function(pdata, file) {
 #' @noRd
 check_unsafe_sequencing <- function(pdata, file) {
   colons <- pdata[pdata$token == "':'", ]
-  if (nrow(colons) == 0) return(NULL)
+  if (nrow(colons) == 0) {
+    return(NULL)
+  }
 
   smells <- list()
   src_lines <- readLines(file, warn = FALSE)
@@ -84,7 +88,9 @@ check_unsafe_sequencing <- function(pdata, file) {
     }
   }
 
-  if (length(smells) == 0) return(NULL)
+  if (length(smells) == 0) {
+    return(NULL)
+  }
   return(do.call(rbind, smells))
 }
 
@@ -123,6 +129,8 @@ check_self_shadowing <- function(funcs, dir_path) {
     }
   }
 
-  if (length(smells) == 0) return(NULL)
+  if (length(smells) == 0) {
+    return(NULL)
+  }
   return(do.call(rbind, smells))
 }

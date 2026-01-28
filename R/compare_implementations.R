@@ -50,4 +50,3 @@ compare_implementations <- function(monolith_path, refactored_dir) {
 
   return(results)
 }
-

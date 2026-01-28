@@ -9,7 +9,6 @@
 #' @author Mark London
 #' @noRd
 get_file_ast <- function(f_path) {
-
   # 1. Check Cache
   # We look inside our internal global environment
   if (exists(f_path, envir = .staticanalysis_globals$ast_cache)) {

@@ -3,7 +3,6 @@ if (!requireNamespace("fs", quietly = TRUE)) install.packages("fs")
 if (!requireNamespace("stringr", quietly = TRUE)) install.packages("stringr")
 
 migrate_to_tinytest <- function(old_dir = "tests/testthat", new_dir = "inst/tinytest") {
-
   if (!fs::dir_exists(old_dir)) stop("Old test directory not found!")
   if (!fs::dir_exists(new_dir)) fs::dir_create(new_dir)
 
@@ -19,12 +18,12 @@ migrate_to_tinytest <- function(old_dir = "tests/testthat", new_dir = "inst/tiny
     new_content <- new_content[!grepl("library\\(testthat\\)", new_content)]
 
     # 2. Convert context("name") to a simple comment
-    new_content <- gsub('context\\("(.*?)"\\)', '# Context: \\1', new_content)
+    new_content <- gsub('context\\("(.*?)"\\)', "# Context: \\1", new_content)
 
     # 3. Flatten 'test_that' blocks
     # Transforms: test_that("my description", {
     # Into:       # Test: my description
-    new_content <- gsub('test_that\\("(.*?)"\\s*,\\s*\\{', '# Test: \\1', new_content)
+    new_content <- gsub('test_that\\("(.*?)"\\s*,\\s*\\{', "# Test: \\1", new_content)
 
     # Remove the closing brackets "}" of the test_that blocks
     # (This is a rough heuristic - it assumes the closing } is on its own line)

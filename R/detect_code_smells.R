@@ -1,5 +1,5 @@
-#' @title Detect Code Smells (Orchestrator)
-#'
+#' @title Detect Code Smells
+#' @description
 #' Scans the codebase for dangerous patterns and classifies them by severity.
 #'
 #' @param dir_path String. Path to the project root.
@@ -42,14 +42,16 @@ detect_code_smells <- function(dir_path = ".") {
       smells <- c(smells, list(
         check_self_shadowing(funcs, dir_path), # The Ouroboros
         check_library_injection(funcs, dir_path), # Tier 2: Library inside func
-        check_base_overwrite(funcs)               # Tier 1: Overwriting 'mean'
+        check_base_overwrite(funcs) # Tier 1: Overwriting 'mean'
       ))
     }
   }
 
   # 4. Aggregate & return
   smells <- Filter(Negate(is.null), smells)
-  if (length(smells) == 0) return(NULL)
+  if (length(smells) == 0) {
+    return(NULL)
+  }
 
   res <- do.call(rbind, smells)
   return(unique(res))

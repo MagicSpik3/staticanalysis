@@ -12,12 +12,16 @@ new_audit_inventory <- function(df) {
   required_cols <- c("name", "type", "file")
 
   # 2. Validation
-  if (is.null(df)) return(NULL)
+  if (is.null(df)) {
+    return(NULL)
+  }
 
   missing_cols <- setdiff(required_cols, colnames(df))
   if (length(missing_cols) > 0) {
-    stop("Invalid Inventory Schema. Missing columns: ",
-         paste(missing_cols, collapse = ", "))
+    stop(
+      "Invalid Inventory Schema. Missing columns: ",
+      paste(missing_cols, collapse = ", ")
+    )
   }
 
   # 3. Standardization (Ensure optional columns exist)

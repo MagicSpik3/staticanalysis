@@ -39,4 +39,3 @@ audit_formula_functions <- function(dir_path) {
   colnames(counts) <- c("function_name", "count")
   return(counts[order(-counts$count), ])
 }
-

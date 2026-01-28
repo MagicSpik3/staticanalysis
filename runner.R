@@ -21,7 +21,7 @@ covr::package_coverage(path = ".",
                        pre_clean = TRUE)
 cov <- covr::package_coverage(
   path = ".",
-  type = "all",           # <--- Runs Tests, Vignettes, and Examples
+  type = "tests",           # <--- Runs Tests, Vignettes, and Examples
   combine_types = FALSE,   # <--- CRITICAL: Merges them so the HTML report doesn't crash
   relative_path = TRUE,
   quiet = FALSE,          # Change to FALSE so you can see if the vignette errors in the logs
@@ -66,12 +66,10 @@ if (exists("find_func_lines", where = asNamespace("staticanalysis"), inherits = 
 # 5. Run the specific test
 testthat::test_file("tests/testthat/test-refactor_misplaced.R")
 
-usethis::use_pkgdown_github_pages()
-usethis::create_github_token()
-gitcreds::gitcreds_set()
-gitcreds::gitcreds_delete()
-2
-22
+# usethis::use_pkgdown_github_pages()
+#usethis::create_github_token()
+#gitcreds::gitcreds_set()
+#gitcreds::gitcreds_delete()
 # This loads all your functions into memory immediately
 usethis::use_package("fs")      # For file system handling
 usethis::use_package("dplyr")   # For counting frequencies
@@ -239,14 +237,15 @@ message("\n[OK] Analysis Complete.")
 
 
 library(staticanalysis)
-
+library(rdyntrace)
+library(mypkg)
 # 1. Run the scan
 smells <- detect_code_smells(".")
 
 # 2. See the results
 print_smells(smells)
 
-library(mypkg)
+
 
 # 1. Run the scan
 smells <- detect_code_smells("../mypkg")
@@ -296,12 +295,13 @@ for (nm in names(calls)) {
   )
 }
 
-ts()
+
 dynamic_data <- trace_results()
 print(dynamic_data)
+ts()
 
 
-restore_package("mypkg")
 # 2. Generate the Heatmap
 staticanalysis::visualize_performance("nth_prime_bad", dynamic_data, dir_path = "../mypkg")
 
+restore_package("mypkg")

@@ -34,17 +34,17 @@ print_smells <- function(smells) {
 
       # Color coding
       bullet <- switch(s$severity,
-                       "CRITICAL" = cli::col_red(cli::symbol$cross),
-                       "HIGH"     = cli::col_red(cli::symbol$warning),
-                       "MEDIUM"   = cli::col_yellow(cli::symbol$bullet),
-                       cli::col_cyan(cli::symbol$info)
+        "CRITICAL" = cli::col_red(cli::symbol$cross),
+        "HIGH"     = cli::col_red(cli::symbol$warning),
+        "MEDIUM"   = cli::col_yellow(cli::symbol$bullet),
+        cli::col_cyan(cli::symbol$info)
       )
 
       sev_tag <- switch(s$severity,
-                        "CRITICAL" = cli::bg_red(cli::col_white(paste0(" ", s$severity, " "))),
-                        "HIGH"     = cli::col_red(paste0("[", s$severity, "]")),
-                        "MEDIUM"   = cli::col_yellow(paste0("[", s$severity, "]")),
-                        cli::col_grey(paste0("[", s$severity, "]"))
+        "CRITICAL" = cli::bg_red(cli::col_white(paste0(" ", s$severity, " "))),
+        "HIGH"     = cli::col_red(paste0("[", s$severity, "]")),
+        "MEDIUM"   = cli::col_yellow(paste0("[", s$severity, "]")),
+        cli::col_grey(paste0("[", s$severity, "]"))
       )
 
       cli::cli_text(paste0(

@@ -1,5 +1,4 @@
 test_that("audit_exports correctly identifies all 5 export statuses", {
-
   # 1. Setup: Create a temporary dummy package
   root <- fs::dir_create(file.path(tempdir(), "export_test_pkg"))
   r_dir <- fs::dir_create(file.path(root, "R"))
@@ -32,7 +31,7 @@ test_that("audit_exports correctly identifies all 5 export statuses", {
   # D. DETACHED_TAG (The tricky syntax error)
   writeLines(c(
     "#' @export",
-    "",  # <--- The deadly blank line
+    "", # <--- The deadly blank line
     "detached_func <- function() {}"
   ), file.path(r_dir, "detached.R"))
 
@@ -47,7 +46,7 @@ test_that("audit_exports correctly identifies all 5 export statuses", {
   # ---------------------------------------------------------
   writeLines(c(
     "export(good_export)", # Correct
-    "export(ghost_func)"   # Wrong (Source has no tag)
+    "export(ghost_func)" # Wrong (Source has no tag)
     # Missing: forgot_to_document
     # Missing: detached_func
     # Missing: not_exported (Correctly)

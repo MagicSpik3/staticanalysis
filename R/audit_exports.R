@@ -7,7 +7,6 @@
 #' @return The inventory dataframe with new columns: 'has_export_tag', 'in_namespace', 'status'.
 #' @export
 audit_exports <- function(inventory, dir_path = ".") {
-
   # 1. Parse NAMESPACE file
   ns_path <- file.path(dir_path, "NAMESPACE")
   ns_exports <- character(0)
@@ -31,15 +30,16 @@ audit_exports <- function(inventory, dir_path = ".") {
   # 2. Check Source Code for Roxygen Tags
   # We iterate only functions
   inventory$has_export_tag <- FALSE
-  inventory$detached_tag   <- FALSE
-  inventory$in_namespace   <- inventory$name %in% ns_exports
+  inventory$detached_tag <- FALSE
+  inventory$in_namespace <- inventory$name %in% ns_exports
 
   funcs <- inventory[inventory$type == "function", ]
 
-  if (nrow(funcs) == 0) return(inventory)
+  if (nrow(funcs) == 0) {
+    return(inventory)
+  }
 
   for (i in seq_len(nrow(funcs))) {
-
     row_idx <- which(inventory$name == funcs$name[i] & inventory$file == funcs$file[i])
     f_path <- file.path(dir_path, funcs$file[i])
 
@@ -94,7 +94,7 @@ audit_exports <- function(inventory, dir_path = ".") {
       }
 
       inventory$has_export_tag[row_idx] <- found_tag
-      inventory$detached_tag[row_idx]   <- found_gap
+      inventory$detached_tag[row_idx] <- found_gap
     }
   }
 

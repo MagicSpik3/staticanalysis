@@ -12,7 +12,9 @@ map_internal_calls <- function(inventory, dir_path = ".") {
   funcs <- inventory[inventory$type == "function", ]
   edges <- data.frame(from = character(), to = character(), stringsAsFactors = FALSE)
 
-  if (nrow(funcs) == 0) return(edges)
+  if (nrow(funcs) == 0) {
+    return(edges)
+  }
 
   # 2. Iterate through every function definition
   for (i in seq_len(nrow(funcs))) {

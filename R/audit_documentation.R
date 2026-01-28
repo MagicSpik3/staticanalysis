@@ -50,6 +50,8 @@ audit_documentation <- function(dir_path = ".") {
     }
   }
 
-  if (length(mismatches) == 0) return(NULL)
+  if (length(mismatches) == 0) {
+    return(NULL)
+  }
   return(do.call(rbind, mismatches))
 }

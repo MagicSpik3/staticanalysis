@@ -51,13 +51,8 @@ audit_inventory <- function(dir_path) {
 
     # Add new columns to required list
     required_cols <- c("name", "file", "type", "misplaced", "export_status")
-
   }
 
 
   return(final_df)
 }
-
-
-
-

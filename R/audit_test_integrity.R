@@ -34,6 +34,8 @@ audit_test_integrity <- function(dir_path = ".") {
     }
   }
 
-  if (length(suspicious) == 0) return(NULL)
+  if (length(suspicious) == 0) {
+    return(NULL)
+  }
   return(do.call(rbind, suspicious))
 }

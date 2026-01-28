@@ -26,7 +26,9 @@ check_library_injection <- function(funcs, dir_path) {
     }
   }
 
-  if (length(smells) == 0) return(NULL)
+  if (length(smells) == 0) {
+    return(NULL)
+  }
   return(do.call(rbind, smells))
 }
 

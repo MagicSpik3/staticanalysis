@@ -26,6 +26,7 @@ Imports:
     diffobj,
     dplyr,
     fs,
+    purrr,
     rlang,
     tools,
     utils

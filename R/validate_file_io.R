@@ -10,7 +10,9 @@
 #' @author Mark London
 #' @export
 validate_file_io <- function(io_report, context_vars = list()) {
-  if (is.null(io_report)) return(TRUE)
+  if (is.null(io_report)) {
+    return(TRUE)
+  }
 
   missing_files <- character()
 

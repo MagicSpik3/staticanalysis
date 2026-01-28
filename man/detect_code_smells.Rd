@@ -2,9 +2,7 @@
 % Please edit documentation in R/detect_code_smells.R
 \name{detect_code_smells}
 \alias{detect_code_smells}
-\title{Detect Code Smells (Orchestrator)
-
-Scans the codebase for dangerous patterns and classifies them by severity.}
+\title{Detect Code Smells}
 \usage{
 detect_code_smells(dir_path = ".")
 }
@@ -15,8 +13,6 @@ detect_code_smells(dir_path = ".")
 A dataframe with columns: file, line, id, severity, category, message.
 }
 \description{
-Detect Code Smells (Orchestrator)
-
 Scans the codebase for dangerous patterns and classifies them by severity.
 }
 \author{

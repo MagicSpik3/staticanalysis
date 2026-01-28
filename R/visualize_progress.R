@@ -47,8 +47,8 @@ visualize_progress <- function(inventory, return_dot = FALSE) {
   if (nrow(edges_df) > 0) {
     graph_edges <- DiagrammeR::create_edge_df(
       from = id_map[edges_df$from],
-      to   = id_map[edges_df$to],
-      rel  = "calls",
+      to = id_map[edges_df$to],
+      rel = "calls",
       color = "slategray",
       arrowhead = "vee"
     )
