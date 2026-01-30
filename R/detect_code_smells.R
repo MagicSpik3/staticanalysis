@@ -19,24 +19,23 @@ detect_code_smells <- function(dir_path = ".") {
     pdata <- get_file_ast(f)
     if (is.null(pdata)) next
 
-    # Delegate to specialized modules
     smells <- c(smells, list(
-      # Existing Checks (Updated to new schema internally)
+      # Category: PORTABILITY / CONFIG
       check_absolute_paths(pdata, f),
-      check_global_assignment(pdata, f),
-      check_unsafe_boolean(pdata, f),
-      check_unsafe_sequencing(pdata, f),
 
-      # NEW TIER 1 CHECKS (Correctness)
+      # Category: CORRECTNESS
+      check_global_assignment(pdata, f),
       check_environment_pollution(pdata, f),
       check_reproducibility(pdata, f),
       check_dynamic_execution(pdata, f),
-      check_sapply_usage(pdata, f),
 
-      # ROBUSTNESS CHECKS (Now calling the new file)
-      check_ambiguous_selection(pdata, f), # <--- NEW
-      check_unsafe_boolean(pdata, f),
-      check_unsafe_sequencing(pdata, f)
+      # Category: ROBUSTNESS
+      check_ambiguous_selection(pdata, f),
+      check_unsafe_boolean(pdata, f),      # Called only once now
+      check_unsafe_sequencing(pdata, f),   # Called only once now
+
+      # Category: EFFICIENCY
+      check_sapply_usage(pdata, f)
     ))
   }
 

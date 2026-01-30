@@ -6,18 +6,6 @@
 \usage{
 infer_path_contract(dir_path = ".", config_var = "paths")
 }
-\arguments{
-\item{dir_path}{String. Project root.}
-
-\item{config_var}{String. The name of your paths list variable (default "paths").}
-}
-\value{
-A dataframe describing the contract (Input/Output) for each key.
-}
 \description{
-Scans the code to determine which variables are treated as Inputs (Read)
-and which are treated as Outputs (Write).
-}
-\author{
-Mark London
+Infer Path Contract
 }
