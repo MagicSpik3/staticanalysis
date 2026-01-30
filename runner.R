@@ -1,4 +1,13 @@
+# If the legacy code is at: "D:/git/was-methods/was.methods/R"
+legacy_path <- "D:/git/was-methods/was.methods/R"
+
+# This works immediately because it scans FILES, it doesn't load LIBRARY
+smells <- detect_code_smells(legacy_path)
+
+
 # runner
+
+
 usethis::use_vignette("how-to-audit-dependencies")
 
 usethis::use_vignette()
@@ -126,7 +135,8 @@ library(staticanalysis)
 devtools::check()
 devtools::test()
 styler::style_pkg()
-lintr::lint_package()
+lint_results <- lintr::lint_package()
+writeLines(text =  lint_results, con = lint.txt)
 library(staticanalysis)
 here::dr_here()
 #devtools::check()

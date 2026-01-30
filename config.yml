@@ -1,0 +1,5 @@
+root: "\\\\nsdata1/has/WAS_Pipeline_Refactoring"
+paths:
+  person: "test_data/MARK/HAS{code}APersonLevel.SAV"
+  remark: "test_data/HAS{code}APersonLevel_RMK.csv"
+  routing: "routing/v3/{yrmon}-{date}"
