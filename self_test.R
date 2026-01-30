@@ -1,5 +1,7 @@
 # 1. Load the latest version of your tools
 devtools::load_all()
+devtools::check()
+
 library(staticanalysis)
 
 # 2. Define target as the current project root

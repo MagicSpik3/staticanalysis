@@ -11,7 +11,8 @@ scan_file_io <- function(dir_path = ".") {
 
   read_funcs <- c(
     "read.csv", "read.table", "readRDS", "load", "source",
-    "read_csv", "read_excel", "fread", "scan"
+    "read_csv", "read_excel", "fread", "scan",
+    "read_sav", "read_sas" # <--- ADD THESE
   )
 
   # 1. Define the recursive scanner (Returns a list of rows)
