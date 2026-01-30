@@ -147,12 +147,16 @@ MIT
   : Audit Recipe for Typos
 - [`audit_test_integrity()`](https://magicspik3.github.io/staticanalysis/reference/audit_test_integrity.md)
   : Audit Test Integrity
+- [`check_free_variables()`](https://magicspik3.github.io/staticanalysis/reference/check_free_variables.md)
+  : Check for Free Variables (Implicit Dependencies)
 - [`check_test_coverage()`](https://magicspik3.github.io/staticanalysis/reference/check_test_coverage.md)
   : Check Test Coverage
 - [`compare_implementations()`](https://magicspik3.github.io/staticanalysis/reference/compare_implementations.md)
   : Compare Implementations
 - [`compile_rules()`](https://magicspik3.github.io/staticanalysis/reference/compile_rules.md)
   : Compile Rules
+- [`create_tracer_dataset()`](https://magicspik3.github.io/staticanalysis/reference/create_tracer_dataset.md)
+  : Create Tracer Dataset (The Micro-Verse)
 - [`detect_code_smells()`](https://magicspik3.github.io/staticanalysis/reference/detect_code_smells.md)
   : Detect Code Smells
 - [`detect_duplicates()`](https://magicspik3.github.io/staticanalysis/reference/detect_duplicates.md)
@@ -163,6 +167,8 @@ MIT
   : Harvest Variables
 - [`hello()`](https://magicspik3.github.io/staticanalysis/reference/hello.md)
   : hello
+- [`infer_path_contract()`](https://magicspik3.github.io/staticanalysis/reference/infer_path_contract.md)
+  : Infer Path Contract
 - [`inspect_recipe()`](https://magicspik3.github.io/staticanalysis/reference/inspect_recipe.md)
   : Inspect Recipe for Missing Inputs
 - [`list_r_files()`](https://magicspik3.github.io/staticanalysis/reference/list_r_files.md)
@@ -179,6 +185,8 @@ MIT
   : Refactor Misplaced Functions (In Situ)
 - [`relocate_functions()`](https://magicspik3.github.io/staticanalysis/reference/relocate_functions.md)
   : Relocate Functions to New Repositories
+- [`run_preflight_check()`](https://magicspik3.github.io/staticanalysis/reference/run_preflight_check.md)
+  : Run Pre-Flight File Check
 - [`run_recipe()`](https://magicspik3.github.io/staticanalysis/reference/run_recipe.md)
   : Run Recipe
 - [`scaffold_migration()`](https://magicspik3.github.io/staticanalysis/reference/scaffold_migration.md)
@@ -189,6 +197,8 @@ MIT
   : Scan Project Dependencies (Robust AST Method)
 - [`scan_file_io()`](https://magicspik3.github.io/staticanalysis/reference/scan_file_io.md)
   : Scan File I/O Requirements (Refactored)
+- [`scan_io_logic()`](https://magicspik3.github.io/staticanalysis/reference/scan_io_logic.md)
+  : Scan I/O Logic (Reads, Writes, and Path Definitions)
 - [`validate_file_io()`](https://magicspik3.github.io/staticanalysis/reference/validate_file_io.md)
   : Validate File I/O Requirements (Pre-Flight Check)
 - [`visualize_callers()`](https://magicspik3.github.io/staticanalysis/reference/visualize_callers.md)
