@@ -113,11 +113,22 @@ scan_dependencies <- function(dir_path) {
   )
   valid_usage <- clean_detected[!clean_detected %in% ignored_set]
 
-  # Create Frequency Table
+  # 4. Guard Clause: Handle the "Zero Dependencies" case
+  if (length(valid_usage) == 0) {
+    # Return an empty dataframe with the correct columns and types
+    return(data.frame(
+      package = character(0),
+      count = integer(0),
+      stringsAsFactors = FALSE
+    ))
+  }
+
+  # 5 Standard Logic (Only runs if data exists)
   usage_table <- as.data.frame(table(valid_usage), stringsAsFactors = FALSE)
   colnames(usage_table) <- c("package", "count")
 
-  # 4. CLASSIFY
+
+  # 6. CLASSIFY
   used_set <- unique(valid_usage)
   ghosts <- setdiff(used_set, declared_pkgs)
   unused <- setdiff(declared_pkgs, used_set)
