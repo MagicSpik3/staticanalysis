@@ -1,3 +1,5 @@
 devtools::load_all(".")
 testthat::test_file("tests/testthat/test-print_smells.R")
 testthat::test_file("tests/testthat/test-scan_file_io.R")
+testthat::test_file("tests/testthat/test-check_growing_vectors.R")
+testthat::test_file("tests/testthat/test-get_file_ast.R")
