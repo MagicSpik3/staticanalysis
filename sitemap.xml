@@ -36,8 +36,7 @@
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/scaffold_migration.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/scan_definitions.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/scan_dependencies.html</loc></url>
-<url><loc>https://magicspik3.github.io/staticanalysis/reference/scan_file_io.html</loc></url>
-<url><loc>https://magicspik3.github.io/staticanalysis/reference/scan_io_logic.html</loc></url>
+<url><loc>https://magicspik3.github.io/staticanalysis/reference/scan_project_io.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/validate_file_io.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/visualize_callers.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/visualize_performance.html</loc></url>

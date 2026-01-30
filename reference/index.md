@@ -62,10 +62,8 @@
   : Scan Definitions
 - [`scan_dependencies()`](https://magicspik3.github.io/staticanalysis/reference/scan_dependencies.md)
   : Scan Project Dependencies (Robust AST Method)
-- [`scan_file_io()`](https://magicspik3.github.io/staticanalysis/reference/scan_file_io.md)
-  : Scan File I/O Requirements (Refactored)
-- [`scan_io_logic()`](https://magicspik3.github.io/staticanalysis/reference/scan_io_logic.md)
-  : Scan I/O Logic (Reads, Writes, and Path Definitions)
+- [`scan_project_io()`](https://magicspik3.github.io/staticanalysis/reference/scan_project_io.md)
+  : Scan Project I/O (Unified)
 - [`validate_file_io()`](https://magicspik3.github.io/staticanalysis/reference/validate_file_io.md)
   : Validate File I/O Requirements (Pre-Flight Check)
 - [`visualize_callers()`](https://magicspik3.github.io/staticanalysis/reference/visualize_callers.md)
