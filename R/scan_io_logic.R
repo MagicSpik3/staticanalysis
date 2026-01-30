@@ -57,17 +57,33 @@ scan_io_logic <- function(dir_path = ".") {
       }
 
       # --- CHECK 2: Is it a WRITE? ---
+
+      # ... Inside the WRITE check ...
       else if (clean_fn %in% names(write_sigs)) {
         arg_idx <- write_sigs[[clean_fn]]
         if (length(expr) > arg_idx) {
           arg_expr <- expr[[arg_idx + 1]]
+
+          # Analyze the Path Argument
+          path_type <- "LITERAL"
+          if (is.symbol(arg_expr)) path_type <- "VARIABLE"
+          if (is.call(arg_expr)) {
+            # If it calls paste, sprintf, or file.path, it is DYNAMIC
+            callee <- as.character(arg_expr[[1]])
+            if (callee %in% c("paste", "paste0", "sprintf", "file.path", "glue")) {
+              path_type <- "DYNAMIC/DERIVED"
+            }
+          }
+
           results[[length(results) + 1]] <<- data.frame(
             file = file, type = "WRITE", func = fn_name,
+            path_mode = path_type, # NEW COLUMN
             expression = deparse1(arg_expr),
             stringsAsFactors = FALSE
           )
         }
       }
+
 
       # --- CHECK 3: Is it a PATH DEFINITION? ---
       # Looking for: variable <- file.path(...)
@@ -116,28 +132,3 @@ deparse1 <- function(x) {
 
 
 
-# ... Inside the WRITE check ...
-else if (clean_fn %in% names(write_sigs)) {
-  arg_idx <- write_sigs[[clean_fn]]
-  if (length(expr) > arg_idx) {
-    arg_expr <- expr[[arg_idx + 1]]
-
-    # Analyze the Path Argument
-    path_type <- "LITERAL"
-    if (is.symbol(arg_expr)) path_type <- "VARIABLE"
-    if (is.call(arg_expr)) {
-      # If it calls paste, sprintf, or file.path, it is DYNAMIC
-      callee <- as.character(arg_expr[[1]])
-      if (callee %in% c("paste", "paste0", "sprintf", "file.path", "glue")) {
-        path_type <- "DYNAMIC/DERIVED"
-      }
-    }
-
-    results[[length(results) + 1]] <<- data.frame(
-      file = file, type = "WRITE", func = fn_name,
-      path_mode = path_type, # NEW COLUMN
-      expression = deparse1(arg_expr),
-      stringsAsFactors = FALSE
-    )
-  }
-}
