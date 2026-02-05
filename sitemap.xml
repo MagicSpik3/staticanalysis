@@ -9,6 +9,7 @@
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/audit_exports.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/audit_formula_functions.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/audit_inventory.html</loc></url>
+<url><loc>https://magicspik3.github.io/staticanalysis/reference/audit_package_clones.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/audit_recipe_typos.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/audit_test_integrity.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/check_free_variables.html</loc></url>
@@ -18,7 +19,9 @@
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/create_tracer_dataset.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/detect_code_smells.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/detect_duplicates.html</loc></url>
+<url><loc>https://magicspik3.github.io/staticanalysis/reference/detect_near_dupes.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/detect_typos.html</loc></url>
+<url><loc>https://magicspik3.github.io/staticanalysis/reference/get_function_inventory.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/harvest_variables.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/hello.html</loc></url>
 <url><loc>https://magicspik3.github.io/staticanalysis/reference/index.html</loc></url>

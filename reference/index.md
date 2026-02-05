@@ -10,6 +10,8 @@
   : Audit Functions Used in Rules
 - [`audit_inventory()`](https://magicspik3.github.io/staticanalysis/reference/audit_inventory.md)
   : Audit Project Inventory
+- [`audit_package_clones()`](https://magicspik3.github.io/staticanalysis/reference/audit_package_clones.md)
+  : Generate Package Clone Report
 - [`audit_recipe_typos()`](https://magicspik3.github.io/staticanalysis/reference/audit_recipe_typos.md)
   : Audit Recipe for Typos
 - [`audit_test_integrity()`](https://magicspik3.github.io/staticanalysis/reference/audit_test_integrity.md)
@@ -28,8 +30,12 @@
   : Detect Code Smells
 - [`detect_duplicates()`](https://magicspik3.github.io/staticanalysis/reference/detect_duplicates.md)
   : Detect Code Logic Duplicates (Clones)
+- [`detect_near_dupes()`](https://magicspik3.github.io/staticanalysis/reference/detect_near_dupes.md)
+  : Detect Non-DRY Logic
 - [`detect_typos()`](https://magicspik3.github.io/staticanalysis/reference/detect_typos.md)
   : Detect Potential Typos
+- [`get_function_inventory()`](https://magicspik3.github.io/staticanalysis/reference/get_function_inventory.md)
+  : Extract Function DNA
 - [`harvest_variables()`](https://magicspik3.github.io/staticanalysis/reference/harvest_variables.md)
   : Harvest Variables
 - [`hello()`](https://magicspik3.github.io/staticanalysis/reference/hello.md)
