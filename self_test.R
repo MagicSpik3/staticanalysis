@@ -347,8 +347,9 @@ print(res)
 #   exact     = res$exact,
 #   near      = res$near
 # ), path = "duplicate_functions_report.xlsx")
-
-
-
+getwd()
+audit_package_clones("/home/jonny/R_Code/mypkg")
+audit_package_clones("/home/jonny/R_Code/staticanalysis")
+get_function_inventory()
 
 
