@@ -74,6 +74,8 @@
   : Validate File I/O Requirements (Pre-Flight Check)
 - [`visualize_callers()`](https://magicspik3.github.io/staticanalysis/reference/visualize_callers.md)
   : Visualize Incoming Calls (Reverse Dependency)
+- [`visualize_flow()`](https://magicspik3.github.io/staticanalysis/reference/visualize_flow.md)
+  : Visualize Downstream Calls (Forward Dependency)
 - [`visualize_performance()`](https://magicspik3.github.io/staticanalysis/reference/visualize_performance.md)
   : Visualize Performance Heatmap
 - [`visualize_progress()`](https://magicspik3.github.io/staticanalysis/reference/visualize_progress.md)
